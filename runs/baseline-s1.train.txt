@@ -1,0 +1,23 @@
+[train] recipe=baseline params=3.44M budget=12.0M tokens
+[phase] baseline: shuffled next-token prediction (progress 0.0%)
+  [  0.1%] step     1 train 8.332 | val stories 8.347 (ppl 4216.75) childes 8.330 | 1s
+  [  5.1%] step    74 train 4.531 | val stories 4.030 (ppl  56.26) childes 4.959 | 39s
+  [ 10.0%] step   147 train 3.980 | val stories 3.516 (ppl  33.63) childes 4.549 | 78s
+  [ 15.0%] step   220 train 3.708 | val stories 3.241 (ppl  25.55) childes 4.354 | 116s
+  [ 20.0%] step   293 train 3.476 | val stories 3.037 (ppl  20.83) childes 4.244 | 153s
+  [ 25.1%] step   367 train 3.407 | val stories 2.889 (ppl  17.97) childes 4.175 | 192s
+  [ 30.0%] step   440 train 3.208 | val stories 2.789 (ppl  16.27) childes 4.073 | 229s
+  [ 35.0%] step   513 train 3.082 | val stories 2.677 (ppl  14.55) childes 4.008 | 266s
+  [ 40.0%] step   586 train 3.087 | val stories 2.605 (ppl  13.53) childes 3.989 | 304s
+  [ 45.1%] step   660 train 3.002 | val stories 2.535 (ppl  12.62) childes 3.911 | 343s
+  [ 50.0%] step   733 train 2.843 | val stories 2.468 (ppl  11.79) childes 3.838 | 383s
+  [ 55.0%] step   806 train 2.907 | val stories 2.420 (ppl  11.24) childes 3.824 | 420s
+  [ 60.0%] step   879 train 2.840 | val stories 2.369 (ppl  10.69) childes 3.787 | 458s
+  [ 65.1%] step   953 train 2.661 | val stories 2.327 (ppl  10.24) childes 3.740 | 496s
+  [ 70.0%] step  1026 train 2.809 | val stories 2.291 (ppl   9.89) childes 3.721 | 533s
+  [ 75.0%] step  1099 train 2.546 | val stories 2.258 (ppl   9.56) childes 3.693 | 571s
+  [ 80.0%] step  1172 train 2.529 | val stories 2.237 (ppl   9.37) childes 3.679 | 609s
+  [ 85.1%] step  1246 train 2.587 | val stories 2.218 (ppl   9.19) childes 3.659 | 647s
+  [ 90.0%] step  1319 train 2.587 | val stories 2.197 (ppl   9.00) childes 3.642 | 685s
+  [ 95.0%] step  1392 train 2.465 | val stories 2.186 (ppl   8.90) childes 3.629 | 722s
+[done] saved runs/baseline-s1 | {"trained_tokens": 12001280, "forward_only_tokens": 0, "units": 36003840.0, "steps": 1465, "wall_s": 759.5084722042084, "params": 3443136}

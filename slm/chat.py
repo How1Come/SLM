@@ -1,6 +1,6 @@
 """Talk to (or sample from) a trained model.
 
-    python -m slm.chat                         # interactive, uses runs/cradle/model.pt (or runs/cradle-s0/)
+    python -m slm.chat                         # interactive, uses runs/listen, runs/cradle, or runs/cradle-listen-only-s0
     python -m slm.chat --prompt "once upon a time" -n 3
 """
 
@@ -34,8 +34,8 @@ def main():
     args = ap.parse_args()
 
     if args.checkpoint is None:
-        found = [p for p in ("runs/cradle/model.pt", "runs/cradle-s0/model.pt") if Path(p).exists()]
-        args.checkpoint = found[0] if found else "runs/cradle/model.pt"
+        found = [p for p in ("runs/listen/model.pt", "runs/cradle/model.pt", "runs/cradle-listen-only-s0/model.pt") if Path(p).exists()]
+        args.checkpoint = found[0] if found else "runs/listen/model.pt"
     if not Path(args.checkpoint).exists():
         raise SystemExit(f"{args.checkpoint} not found. Train first: python -m slm.train --recipe cradle")
     if args.seed is not None:

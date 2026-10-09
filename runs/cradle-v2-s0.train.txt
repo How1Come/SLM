@@ -1,0 +1,86 @@
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1-listen: child-directed speech, age-ordered, context 64 (progress 0.0%)
+  [  0.1%] step     1 train 8.348 | val stories 8.353 (ppl 4244.15) childes 8.352 | 1s
+  [  5.1%] step    74 train 4.404 | val stories 5.040 (ppl 154.52) childes 4.478 | 72s
+  [ 10.0%] step   147 train 4.014 | val stories 4.696 (ppl 109.51) childes 4.128 | 153s
+    > look at the door in there was the best. there was it? it's the door and. she liked that.
+    > once upon a time, there was a little girl too!
+    > what do you want to play in his car is that. the yellow is too?
+[phase] 2-listen: stories simple->complex, context 128->256 (progress 10.0%)
+  [ 15.0%] step   220 train 3.318 | val stories 3.280 (ppl  26.59) childes 4.360 | 192s
+  [ 20.0%] step   293 train 3.018 | val stories 3.033 (ppl  20.75) childes 4.270 | 232s
+  [ 25.1%] step   367 train 2.906 | val stories 2.867 (ppl  17.59) childes 4.243 | 273s
+  [ 30.0%] step   441 train 2.941 | val stories 2.743 (ppl  15.53) childes 4.152 | 312s
+  [ 35.0%] step   515 train 2.909 | val stories 2.637 (ppl  13.97) childes 4.094 | 350s
+  [ 40.1%] step   590 train 2.703 | val stories 2.532 (ppl  12.57) childes 4.045 | 391s
+  [ 45.1%] step   664 train 2.816 | val stories 2.484 (ppl  11.99) childes 4.012 | 432s
+  [ 50.0%] step   737 train 2.824 | val stories 2.424 (ppl  11.29) childes 3.987 | 474s
+  [ 55.0%] step   810 train 2.689 | val stories 2.366 (ppl  10.65) childes 3.954 | 515s
+  [ 60.0%] step   883 train 2.636 | val stories 2.295 (ppl   9.92) childes 3.917 | 555s
+    > look at the flower. there was the flower in the flower. timmy thought it was so pretty. he decided that it was a secret! his friend opened his car and took him home. the little bird was so
+    > once upon a time, there was a little boy called tim. tim loved to play outside. every day he would look for food, but one day he got stuck on a rock. one day, tim saw the rain falling down his way.
+    > what do you want to get?
+[phase] 3-babble: talk, get caregiver feedback, learn from praise and recasts (progress 60.0%)
+  [babble 0 cds] fluency -3.87 rep 0.007 ended 0.57 disc-acc 0.80
+    best : so let's see now who's in the park.
+    worst: okay go ahead? no boo-boo! oh she wanted to go to. i need a cup, please i?
+    recast: okay go ahead? no boo we can't really dance in here sweetie. we usually dance on the bed but daddy's in there doing a li
+  [babble 0 story] fluency -3.43 rep 0.013 ended 0.18 disc-acc 0.80
+    best : one day, two friends mike and emma were walking in the park. they saw a small tree with lots of colorful flowers on it. 
+    worst: once there was a lonely hunter. he had nothing was coming to be seen! the fox heard a so sad! suddenly he heard a small 
+    recast: once there was a lonely hunter. he had nothing, but his bow and his arrows. he would go out to shoot and bring back food
+  [babble 1 cds] fluency -3.76 rep 0.006 ended 0.49 disc-acc 0.80
+    best : i want you to eat. please don't.
+    worst: oh okay. so. ah hm nightwoh you're so tired.
+    recast: oh okay. so. ah one thirty now. yes oh that's right yes i forgot actually leaves at two we have to be there half an hour
+  [babble 1 story] fluency -3.35 rep 0.015 ended 0.18 disc-acc 0.80
+    best : one day, tom went to the airport with his owner. they were very curious about everything they could go on the farm.
+    worst: once upon a time, there was a blueb in the sky. the man couldn't see a beautiful sight. he was so excited to see a beaut
+    recast: once upon a time, there was a bluebird called toby. toby was a very curious bird and always liked to explore new places.
+  [ 65.1%] step   952 train 2.555 | val stories 2.283 (ppl   9.81) childes 3.917 | 603s
+  [babble 2 cds] fluency -3.86 rep 0.006 ended 0.54 disc-acc 0.80
+    best : yup push the circle? what's that?
+    worst: his mother held on to hold a little one too. but mommy held it over the window of the window and said, "see, i's trying 
+    recast: his mother held on to the seat. try it i won't let you go until you tell me to. franklin pedaled while his mother guided
+  [babble 2 story] fluency -3.34 rep 0.015 ended 0.18 disc-acc 0.80
+    best : once there was a little girl named mary. she was playing in the park when she saw a big box in the corner. it was so pre
+    worst: ben is a farmer. he has a big farm with many animals. he wants to be his home, but no one says they are not." he says he
+    recast: ben is a farmer. he has a big farm with many animals. he likes to feed the cows, the pigs, the sheep and the chickens. h
+  [ 70.0%] step  1022 train 2.441 | val stories 2.268 (ppl   9.66) childes 3.873 | 645s
+  [babble 3 cds] fluency -3.84 rep 0.005 ended 0.68 disc-acc 0.80
+    best : oh careful. careful of my pocket is broken.
+    worst: right. like a kangaroo in the school.
+    recast: right. like a kangaroo come on let's jump it's fun to do like a kangaroo. where's your mail for gabby and debbie? is it 
+  [babble 3 story] fluency -3.33 rep 0.016 ended 0.14 disc-acc 0.80
+    best : bob was a 3-year-old boy who loved to play outside in the water. one day, he found a new collar on the ground. he picked
+    worst: sam's mum had made some amazing pastries for their dinner. they decided to try some more toast together. sam had a yummy
+    recast: sam's mum had made some amazing pastries for him and his brother to eat. they were so delicious. every time sam took a b
+  [ 75.0%] step  1093 train 2.501 | val stories 2.230 (ppl   9.30) childes 3.835 | 689s
+  [babble 4 cds] fluency -3.86 rep 0.005 ended 0.55 disc-acc 0.80
+    best : hello and goodbye the end? there you go!
+    worst: they go in th? aha? no. a frog? a light is! there?
+    recast: they go in th? aha i mean. what do you want? i showed ross or ross saw those oponki hanging up and when he ah i said he 
+  [babble 4 story] fluency -3.32 rep 0.013 ended 0.14 disc-acc 0.80
+    best : tim and sam were best friends. they liked to play together all day long.
+    worst: tom and mia are friends. they like to play in the park with each other. spot likes to help the slide in the park. one da
+    recast: tom and mia are friends. they like to play with toys in the yard. one day, they find a big frame in the trash. the frame
+  [ 80.0%] step  1164 train 2.609 | val stories 2.211 (ppl   9.13) childes 3.814 | 733s
+  [babble 5 cds] fluency -3.81 rep 0.007 ended 0.57 disc-acc 0.80
+    best : that's the only thing? what's that?
+    worst: poor franklin. you did not have to eat this cup, too. thank you?
+    recast: poor franklin. for the rest of the week franklin felt left out. he watched as his friends rode off without him. they wer
+  [babble 5 story] fluency -3.27 rep 0.013 ended 0.14 disc-acc 0.80
+    best : once upon a time, there was an angel. she lived in a big forest. tom was very adventurous and he was having a lot of fun
+    worst: anna and ben like to play with cardboard. they have an expensive cardboard that is yellow from the cardboard. the mail i
+    recast: anna and ben like to play with cardboard. they have many boxes and tubes and cut them and stick them. they make houses a
+  [ 85.0%] step  1234 train 2.552 | val stories 2.185 (ppl   8.89) childes 3.800 | 777s
+    > look at the bird. there was the bird in the air. it wanted to see what had happened. the bird flew down to the ground and the bird flew away. it could not roll the ball anymore. the
+    > once upon a time, there was a little girl called anna. she loved to play outside in the garden. one day, she found a big bush. she said, "mommy, can you open the bush?" the bush said, "yes
+    > what do you want to get out?" he asked, "it's a fun day playing on the swings, but there's the park there and we don't think we should do something special and we can't find out if
+[phase] 4 (ablated): plain replay (progress 85.0%)
+  [ 90.0%] step  1308 train 2.449 | val stories 2.163 (ppl   8.70) childes 3.781 | 818s
+  [ 95.0%] step  1381 train 2.381 | val stories 2.143 (ppl   8.52) childes 3.765 | 856s
+    > look at the squirrel. there was the squirrel in the tree. he wanted to see what was coming from the tree. the squirrel was very fast and the squirrel was scared. soon the squirrel ran away from the tree
+    > once upon a time, there was a little girl called jane. jane loved to play outside in the garden. one day, jane found a big bush. it was very tall and quiet. she picked it up and ran to the bush. she
+    > what do you want to get out of the house? i don't know where's one. now that one is there? what's there were?
+[done] saved runs/cradle-v2-s0 | {"trained_tokens": 11879424, "forward_only_tokens": 368640, "units": 36006912.0, "steps": 1454, "wall_s": 894.0826494693756, "params": 3443136}

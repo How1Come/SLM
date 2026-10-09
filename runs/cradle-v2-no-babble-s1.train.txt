@@ -1,0 +1,35 @@
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1-listen: child-directed speech, age-ordered, context 64 (progress 0.0%)
+  [  0.1%] step     1 train 8.319 | val stories 8.347 (ppl 4216.75) childes 8.330 | 2s
+  [  5.1%] step    74 train 4.441 | val stories 5.131 (ppl 169.11) childes 4.483 | 41s
+  [ 10.0%] step   147 train 4.053 | val stories 4.757 (ppl 116.44) childes 4.117 | 81s
+    > look at the other pieces and they're going to take it on here? okay.
+    > once upon a time, there was a little tree. she's a time the car too!
+    > what do you want to play in his car is that's a time that day?
+[phase] 2-listen: stories simple->complex, context 128->256 (progress 10.0%)
+  [ 15.0%] step   220 train 3.232 | val stories 3.271 (ppl  26.33) childes 4.341 | 121s
+  [ 20.0%] step   293 train 2.998 | val stories 3.010 (ppl  20.29) childes 4.268 | 161s
+  [ 25.1%] step   367 train 2.806 | val stories 2.865 (ppl  17.55) childes 4.234 | 202s
+  [ 30.0%] step   441 train 2.882 | val stories 2.735 (ppl  15.40) childes 4.189 | 241s
+  [ 35.0%] step   515 train 2.858 | val stories 2.644 (ppl  14.06) childes 4.115 | 280s
+  [ 40.1%] step   590 train 2.708 | val stories 2.540 (ppl  12.68) childes 4.061 | 319s
+  [ 45.1%] step   664 train 2.856 | val stories 2.480 (ppl  11.94) childes 4.027 | 358s
+  [ 50.0%] step   737 train 2.827 | val stories 2.426 (ppl  11.31) childes 3.993 | 399s
+  [ 55.0%] step   810 train 2.771 | val stories 2.365 (ppl  10.64) childes 3.959 | 440s
+  [ 60.0%] step   883 train 2.600 | val stories 2.312 (ppl  10.09) childes 3.929 | 482s
+    > look at the sky. there was the best land in the world! it had never been very special before! the moon was a secret! they were so many years old things and they all lived together in a big
+    > once upon a time, there was a little boy called tim. tim loved to play outside in the garden. one day, they found a big bush. he said, "mommy, can you please help me?" the bush said, "yes
+    > what do you want to get out of the house?
+[phase] 3 (ablated): plain replay (progress 60.0%)
+  [ 65.1%] step   957 train 2.508 | val stories 2.278 (ppl   9.75) childes 3.908 | 521s
+  [ 70.0%] step  1030 train 2.538 | val stories 2.237 (ppl   9.36) childes 3.875 | 558s
+  [ 75.0%] step  1103 train 2.433 | val stories 2.213 (ppl   9.15) childes 3.865 | 596s
+  [ 80.0%] step  1176 train 2.482 | val stories 2.189 (ppl   8.93) childes 3.837 | 634s
+  [ 85.0%] step  1249 train 2.432 | val stories 2.164 (ppl   8.71) childes 3.818 | 672s
+[phase] 4 (ablated): plain replay (progress 85.0%)
+  [ 90.0%] step  1323 train 2.439 | val stories 2.143 (ppl   8.53) childes 3.808 | 708s
+  [ 95.0%] step  1396 train 2.356 | val stories 2.138 (ppl   8.48) childes 3.797 | 744s
+    > look at the flower in there. the flower was so happy and it flew high into the tree. bob was so proud of his wish!
+    > once upon a time, there was a little boy named timmy. he loved to play outside in the sun. one day, he saw a little bird on the ground. timmy's mom said, "wow, that's so pretty!" timmy loved
+    > what do you want to take a closer look at the string? what? you're doing here?
+[done] saved runs/cradle-v2-no-babble-s1 | {"trained_tokens": 12002304, "forward_only_tokens": 0, "units": 36006912.0, "steps": 1469, "wall_s": 780.0815844535828, "params": 3443136}

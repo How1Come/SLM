@@ -1,0 +1,295 @@
+{
+  "args": {
+    "recipe": "cradle",
+    "budget_tokens": 12000000.0,
+    "seed": 1,
+    "batch_tokens": 8192,
+    "lr": 0.002,
+    "warmup": 0.03,
+    "d_model": 192,
+    "n_layer": 6,
+    "n_head": 6,
+    "out": "runs",
+    "name": "cradle-listen-only-s1",
+    "phases": [
+      0.15,
+      0.45,
+      0.25,
+      0.15
+    ],
+    "prior_alpha": 0.3,
+    "use_prior": true,
+    "use_curriculum": true,
+    "use_babble": false,
+    "use_sleep": false,
+    "babble_mode": "pooled",
+    "cds_mix": null,
+    "babble_k": 4,
+    "babble_rounds": 6,
+    "babble_per_round": 1024,
+    "feedback_frac": 0.2,
+    "sleep_beta": 0.5,
+    "ema_decay": 0.998,
+    "eval_every": 0.05,
+    "extra": {}
+  },
+  "curve": [
+    {
+      "progress": 0.0007,
+      "trained_tokens": 8192,
+      "step": 1,
+      "train_ce": 8.3188,
+      "stories_val": 8.3468,
+      "childes_val": 8.33,
+      "wall_s": 1.4,
+      "lr": 4.551111111111112e-05
+    },
+    {
+      "progress": 0.0505,
+      "trained_tokens": 606208,
+      "step": 74,
+      "train_ce": 4.4313,
+      "stories_val": 5.1134,
+      "childes_val": 4.5021,
+      "wall_s": 39.6,
+      "lr": 0.001998013672733423
+    },
+    {
+      "progress": 0.1004,
+      "trained_tokens": 1204224,
+      "step": 147,
+      "train_ce": 4.0995,
+      "stories_val": 4.7442,
+      "childes_val": 4.1005,
+      "wall_s": 77.1,
+      "lr": 0.0019767382739648847
+    },
+    {
+      "progress": 0.1502,
+      "trained_tokens": 1802240,
+      "step": 220,
+      "train_ce": 3.8269,
+      "stories_val": 4.6033,
+      "childes_val": 3.928,
+      "wall_s": 115.2,
+      "lr": 0.0019326727690825308
+    },
+    {
+      "progress": 0.2,
+      "trained_tokens": 2400256,
+      "step": 293,
+      "train_ce": 3.6584,
+      "stories_val": 3.2996,
+      "childes_val": 3.8942,
+      "wall_s": 155.8,
+      "lr": 0.0018669626054359863
+    },
+    {
+      "progress": 0.2505,
+      "trained_tokens": 3006464,
+      "step": 367,
+      "train_ce": 3.2779,
+      "stories_val": 3.0266,
+      "childes_val": 3.812,
+      "wall_s": 196.8,
+      "lr": 0.0017800140177159523
+    },
+    {
+      "progress": 0.3004,
+      "trained_tokens": 3604480,
+      "step": 440,
+      "train_ce": 3.1266,
+      "stories_val": 2.8906,
+      "childes_val": 3.7427,
+      "wall_s": 239.0,
+      "lr": 0.0016764320923772173
+    },
+    {
+      "progress": 0.3501,
+      "trained_tokens": 4201216,
+      "step": 514,
+      "train_ce": 3.1674,
+      "stories_val": 2.7358,
+      "childes_val": 3.7388,
+      "wall_s": 281.5,
+      "lr": 0.0015581339288916868
+    },
+    {
+      "progress": 0.4005,
+      "trained_tokens": 4806016,
+      "step": 589,
+      "train_ce": 3.0836,
+      "stories_val": 2.6324,
+      "childes_val": 3.7031,
+      "wall_s": 324.3,
+      "lr": 0.0014261528799864196
+    },
+    {
+      "progress": 0.4502,
+      "trained_tokens": 5402752,
+      "step": 663,
+      "train_ce": 2.8762,
+      "stories_val": 2.5355,
+      "childes_val": 3.6569,
+      "wall_s": 365.2,
+      "lr": 0.0012874170341126612
+    },
+    {
+      "progress": 0.5001,
+      "trained_tokens": 6000768,
+      "step": 736,
+      "train_ce": 2.858,
+      "stories_val": 2.463,
+      "childes_val": 3.6631,
+      "wall_s": 407.1,
+      "lr": 0.0011435196667614006
+    },
+    {
+      "progress": 0.5506,
+      "trained_tokens": 6606976,
+      "step": 810,
+      "train_ce": 2.8849,
+      "stories_val": 2.3938,
+      "childes_val": 3.6298,
+      "wall_s": 449.8,
+      "lr": 0.0009965140964276866
+    },
+    {
+      "progress": 0.6004,
+      "trained_tokens": 7204992,
+      "step": 883,
+      "train_ce": 2.7884,
+      "stories_val": 2.3491,
+      "childes_val": 3.6082,
+      "wall_s": 491.5,
+      "lr": 0.0008541862271552083
+    },
+    {
+      "progress": 0.6503,
+      "trained_tokens": 7803008,
+      "step": 956,
+      "train_ce": 2.7161,
+      "stories_val": 2.3073,
+      "childes_val": 3.6184,
+      "wall_s": 528.9,
+      "lr": 0.0007182480891557074
+    },
+    {
+      "progress": 0.7001,
+      "trained_tokens": 8401024,
+      "step": 1029,
+      "train_ce": 2.6623,
+      "stories_val": 2.261,
+      "childes_val": 3.5661,
+      "wall_s": 566.7,
+      "lr": 0.0005922332849670469
+    },
+    {
+      "progress": 0.7506,
+      "trained_tokens": 9007232,
+      "step": 1103,
+      "train_ce": 2.6365,
+      "stories_val": 2.2366,
+      "childes_val": 3.544,
+      "wall_s": 605.3,
+      "lr": 0.0004779778047975244
+    },
+    {
+      "progress": 0.8004,
+      "trained_tokens": 9605248,
+      "step": 1176,
+      "train_ce": 2.6026,
+      "stories_val": 2.206,
+      "childes_val": 3.5342,
+      "wall_s": 643.0,
+      "lr": 0.0003815329989670354
+    },
+    {
+      "progress": 0.8503,
+      "trained_tokens": 10203264,
+      "step": 1249,
+      "train_ce": 2.4375,
+      "stories_val": 2.1817,
+      "childes_val": 3.5189,
+      "wall_s": 681.5,
+      "lr": 0.00030376416483647887
+    },
+    {
+      "progress": 0.9001,
+      "trained_tokens": 10801280,
+      "step": 1322,
+      "train_ce": 2.4865,
+      "stories_val": 2.1668,
+      "childes_val": 3.5128,
+      "wall_s": 718.8,
+      "lr": 0.00024669284068565224
+    },
+    {
+      "progress": 0.9506,
+      "trained_tokens": 11407488,
+      "step": 1396,
+      "train_ce": 2.3768,
+      "stories_val": 2.1529,
+      "childes_val": 3.5032,
+      "wall_s": 757.2,
+      "lr": 0.00021148351575805247
+    }
+  ],
+  "phases": [
+    {
+      "name": "1-listen: child-directed speech, age-ordered, context 64",
+      "start_progress": 0.0,
+      "wall_s": 0.37103819847106934
+    },
+    {
+      "name": "2-listen: stories simple->complex, context 128->256",
+      "start_progress": 0.15018666666666666,
+      "wall_s": 115.23712348937988
+    },
+    {
+      "name": "3 (ablated): plain replay",
+      "start_progress": 0.600416,
+      "wall_s": 491.6202619075775
+    },
+    {
+      "name": "4 (ablated): plain replay",
+      "start_progress": 0.850272,
+      "wall_s": 681.4888837337494
+    }
+  ],
+  "babble": [],
+  "diary": [
+    {
+      "phase": "1-listen",
+      "samples": [
+        "look at the door. there was the park in the slide. oh?",
+        "once upon a time, there was a little dog. do you want to help?",
+        "what do you want to do that!"
+      ]
+    },
+    {
+      "phase": "2-listen",
+      "samples": [
+        "look at the flower. there was the flower in the flower. it was white. she picked it up and picked it up. she picked it up and picked it up. soon the flower's tummy lit up.",
+        "once upon a time, there was a little girl called jane. jane was three years old and loved to explore. one day, a little girl named jane went exploring the park. she saw a dog with a big smile on her face. jane",
+        "what do you want to get?"
+      ]
+    },
+    {
+      "phase": "4-sleep",
+      "samples": [
+        "look at the flower. there was the flower in the flower. it liked to see its tree. bob liked to use the flower to cover his hand in his hand. one day, bob's friend said, \"",
+        "once upon a time, there was a little girl called jane. jane loved to play outside and explore the world around her. one day, jane was playing in the garden when she saw a little girl with a big smile on her face. she",
+        "what do you want to get?"
+      ]
+    }
+  ],
+  "summary": {
+    "trained_tokens": 12005504,
+    "forward_only_tokens": 0,
+    "units": 36016512.0,
+    "steps": 1469,
+    "wall_s": 795.8028404712677,
+    "params": 3443136
+  }
+}

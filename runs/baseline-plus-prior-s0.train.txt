@@ -1,0 +1,28 @@
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1+2 (ablated): shuffled next-token prediction (progress 0.0%)
+  [  0.1%] step     1 train 8.356 | val stories 8.353 (ppl 4244.15) childes 8.352 | 1s
+  [  5.1%] step    74 train 4.411 | val stories 3.976 (ppl  53.31) childes 4.906 | 44s
+  [ 10.0%] step   147 train 3.873 | val stories 3.470 (ppl  32.13) childes 4.540 | 85s
+  [ 15.0%] step   220 train 3.640 | val stories 3.210 (ppl  24.79) childes 4.332 | 128s
+  [ 20.0%] step   293 train 3.617 | val stories 3.072 (ppl  21.59) childes 4.218 | 169s
+  [ 25.1%] step   367 train 3.184 | val stories 2.905 (ppl  18.27) childes 4.116 | 210s
+  [ 30.0%] step   440 train 3.393 | val stories 2.793 (ppl  16.32) childes 4.058 | 252s
+  [ 35.0%] step   513 train 3.131 | val stories 2.705 (ppl  14.95) childes 3.976 | 294s
+  [ 40.0%] step   586 train 2.991 | val stories 2.614 (ppl  13.65) childes 3.926 | 336s
+  [ 45.1%] step   660 train 3.004 | val stories 2.532 (ppl  12.57) childes 3.866 | 379s
+  [ 50.0%] step   733 train 2.838 | val stories 2.466 (ppl  11.77) childes 3.825 | 422s
+  [ 55.0%] step   806 train 2.887 | val stories 2.419 (ppl  11.23) childes 3.771 | 465s
+  [ 60.0%] step   879 train 3.001 | val stories 2.368 (ppl  10.67) childes 3.752 | 509s
+[phase] 3 (ablated): plain replay (progress 60.0%)
+  [ 65.1%] step   953 train 2.636 | val stories 2.325 (ppl  10.22) childes 3.713 | 549s
+  [ 70.0%] step  1026 train 2.741 | val stories 2.296 (ppl   9.93) childes 3.688 | 589s
+  [ 75.0%] step  1099 train 2.775 | val stories 2.264 (ppl   9.62) childes 3.660 | 632s
+  [ 80.0%] step  1172 train 2.631 | val stories 2.233 (ppl   9.32) childes 3.641 | 673s
+  [ 85.1%] step  1246 train 2.444 | val stories 2.210 (ppl   9.12) childes 3.625 | 712s
+[phase] 4 (ablated): plain replay (progress 85.1%)
+  [ 90.0%] step  1319 train 2.578 | val stories 2.193 (ppl   8.96) childes 3.611 | 750s
+  [ 95.0%] step  1392 train 2.485 | val stories 2.184 (ppl   8.89) childes 3.601 | 788s
+    > look at the blue square and it was so pretty. then it saw a big green butterfly and wanted to catch it. the butterfly flew up in the sky and saw a beautiful flower. it was too shiny and smelled
+    > once upon a time, there was a little girl called jane. jane loved to play outside in the garden. one day, she found a big bush. it was very tall and had a long hand on the ground. she asked her mom,
+    > what do you want to get?
+[done] saved runs/baseline-plus-prior-s0 | {"trained_tokens": 12001280, "forward_only_tokens": 0, "units": 36003840.0, "steps": 1465, "wall_s": 824.8687620162964, "params": 3443136}

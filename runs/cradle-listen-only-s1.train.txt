@@ -1,0 +1,35 @@
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1-listen: child-directed speech, age-ordered, context 64 (progress 0.0%)
+  [  0.1%] step     1 train 8.319 | val stories 8.347 (ppl 4216.75) childes 8.330 | 1s
+  [  5.1%] step    74 train 4.431 | val stories 5.113 (ppl 166.24) childes 4.502 | 40s
+  [ 10.0%] step   147 train 4.099 | val stories 4.744 (ppl 114.91) childes 4.100 | 77s
+  [ 15.0%] step   220 train 3.827 | val stories 4.603 (ppl  99.82) childes 3.928 | 115s
+    > look at the door. there was the park in the slide. oh?
+    > once upon a time, there was a little dog. do you want to help?
+    > what do you want to do that!
+[phase] 2-listen: stories simple->complex, context 128->256 (progress 15.0%)
+  [ 20.0%] step   293 train 3.658 | val stories 3.300 (ppl  27.10) childes 3.894 | 156s
+  [ 25.1%] step   367 train 3.278 | val stories 3.027 (ppl  20.63) childes 3.812 | 197s
+  [ 30.0%] step   440 train 3.127 | val stories 2.891 (ppl  18.00) childes 3.743 | 239s
+  [ 35.0%] step   514 train 3.167 | val stories 2.736 (ppl  15.42) childes 3.739 | 282s
+  [ 40.1%] step   589 train 3.084 | val stories 2.632 (ppl  13.91) childes 3.703 | 324s
+  [ 45.0%] step   663 train 2.876 | val stories 2.535 (ppl  12.62) childes 3.657 | 365s
+  [ 50.0%] step   736 train 2.858 | val stories 2.463 (ppl  11.74) childes 3.663 | 407s
+  [ 55.1%] step   810 train 2.885 | val stories 2.394 (ppl  10.96) childes 3.630 | 450s
+  [ 60.0%] step   883 train 2.788 | val stories 2.349 (ppl  10.48) childes 3.608 | 492s
+    > look at the flower. there was the flower in the flower. it was white. she picked it up and picked it up. she picked it up and picked it up. soon the flower's tummy lit up.
+    > once upon a time, there was a little girl called jane. jane was three years old and loved to explore. one day, a little girl named jane went exploring the park. she saw a dog with a big smile on her face. jane
+    > what do you want to get?
+[phase] 3 (ablated): plain replay (progress 60.0%)
+  [ 65.0%] step   956 train 2.716 | val stories 2.307 (ppl  10.05) childes 3.618 | 529s
+  [ 70.0%] step  1029 train 2.662 | val stories 2.261 (ppl   9.59) childes 3.566 | 567s
+  [ 75.1%] step  1103 train 2.637 | val stories 2.237 (ppl   9.36) childes 3.544 | 605s
+  [ 80.0%] step  1176 train 2.603 | val stories 2.206 (ppl   9.08) childes 3.534 | 643s
+  [ 85.0%] step  1249 train 2.437 | val stories 2.182 (ppl   8.86) childes 3.519 | 682s
+[phase] 4 (ablated): plain replay (progress 85.0%)
+  [ 90.0%] step  1322 train 2.487 | val stories 2.167 (ppl   8.73) childes 3.513 | 719s
+  [ 95.1%] step  1396 train 2.377 | val stories 2.153 (ppl   8.61) childes 3.503 | 757s
+    > look at the flower. there was the flower in the flower. it liked to see its tree. bob liked to use the flower to cover his hand in his hand. one day, bob's friend said, "
+    > once upon a time, there was a little girl called jane. jane loved to play outside and explore the world around her. one day, jane was playing in the garden when she saw a little girl with a big smile on her face. she
+    > what do you want to get?
+[done] saved runs/cradle-listen-only-s1 | {"trained_tokens": 12005504, "forward_only_tokens": 0, "units": 36016512.0, "steps": 1469, "wall_s": 795.8028404712677, "params": 3443136}

@@ -1,0 +1,35 @@
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1-listen: child-directed speech, age-ordered, context 64 (progress 0.0%)
+  [  0.1%] step     1 train 8.348 | val stories 8.353 (ppl 4244.15) childes 8.352 | 2s
+  [  5.1%] step    74 train 4.404 | val stories 5.040 (ppl 154.52) childes 4.478 | 40s
+  [ 10.0%] step   147 train 4.014 | val stories 4.696 (ppl 109.51) childes 4.128 | 80s
+    > look at the door in there was the best. there was it? it's the door and. she liked that.
+    > once upon a time, there was a little girl too!
+    > what do you want to play in his car is that. the yellow is too?
+[phase] 2-listen: stories simple->complex, context 128->256 (progress 10.0%)
+  [ 15.0%] step   220 train 3.318 | val stories 3.280 (ppl  26.59) childes 4.360 | 122s
+  [ 20.0%] step   293 train 3.018 | val stories 3.033 (ppl  20.75) childes 4.270 | 165s
+  [ 25.1%] step   367 train 2.906 | val stories 2.867 (ppl  17.59) childes 4.243 | 208s
+  [ 30.0%] step   441 train 2.941 | val stories 2.743 (ppl  15.53) childes 4.152 | 250s
+  [ 35.0%] step   515 train 2.909 | val stories 2.637 (ppl  13.97) childes 4.094 | 293s
+  [ 40.1%] step   590 train 2.703 | val stories 2.532 (ppl  12.57) childes 4.045 | 337s
+  [ 45.1%] step   664 train 2.816 | val stories 2.484 (ppl  11.99) childes 4.012 | 378s
+  [ 50.0%] step   737 train 2.824 | val stories 2.424 (ppl  11.29) childes 3.987 | 421s
+  [ 55.0%] step   810 train 2.689 | val stories 2.366 (ppl  10.65) childes 3.954 | 463s
+  [ 60.0%] step   883 train 2.636 | val stories 2.295 (ppl   9.92) childes 3.917 | 505s
+    > look at the flower. there was the flower in the flower. timmy thought it was so pretty. he decided that it was a secret! his friend opened his car and took him home. the little bird was so
+    > once upon a time, there was a little boy called tim. tim loved to play outside. every day he would look for food, but one day he got stuck on a rock. one day, tim saw the rain falling down his way.
+    > what do you want to get?
+[phase] 3 (ablated): plain replay (progress 60.0%)
+  [ 65.1%] step   957 train 2.586 | val stories 2.279 (ppl   9.77) childes 3.895 | 544s
+  [ 70.0%] step  1030 train 2.563 | val stories 2.224 (ppl   9.25) childes 3.858 | 582s
+  [ 75.0%] step  1103 train 2.523 | val stories 2.198 (ppl   9.00) childes 3.839 | 619s
+  [ 80.0%] step  1176 train 2.566 | val stories 2.169 (ppl   8.75) childes 3.811 | 657s
+  [ 85.0%] step  1249 train 2.445 | val stories 2.156 (ppl   8.63) childes 3.814 | 694s
+[phase] 4 (ablated): plain replay (progress 85.0%)
+  [ 90.0%] step  1323 train 2.479 | val stories 2.130 (ppl   8.41) childes 3.785 | 733s
+  [ 95.0%] step  1396 train 2.456 | val stories 2.122 (ppl   8.35) childes 3.774 | 771s
+    > look at the shiny thing and it had a lot of shapes. timmy thought it was so wonderful. he decided that he wanted to share it with his mom and make it shine. from that day on, timmy learned
+    > once upon a time, there was a little girl called jane. she loved to play outside and explore the woods. one day, jane and her mommy went on an adventure to find a special place to go the same forest. she wanted to explore
+    > what do you want to get out of the house? i don't know how to get on the bed or do. here's the bed and the bed.
+[done] saved runs/cradle-v2-no-babble-s0 | {"trained_tokens": 12002304, "forward_only_tokens": 0, "units": 36006912.0, "steps": 1469, "wall_s": 809.49098944664, "params": 3443136}

@@ -12,8 +12,8 @@ so the two can be compared directly.
 | 3. Babble + feedback | talks, and the caregiver reacts | the model continues caregiver prompts; a caregiver critic (trigram fluency, a real-vs-babble discriminator re-fit every round, a repetition penalty, an ending bonus) ranks the outputs; the model trains on its **praised** utterances plus **recasts** (the closest real utterance to its worst attempts), mixed with replayed real data |
 | 4. Sleep | consolidates what it learned | self-distillation from an exponential moving average (EMA) "memory" copy of its own weights |
 
-The design rationale, the literature behind it, and measured results are in the design doc
-(`docs/slm-design.md` in the Project context). A short version of the results is at the bottom of this file.
+The design rationale, the literature behind it, and measured results are in
+[`docs/slm-design.md`](docs/slm-design.md). A short version of the results is at the bottom of this file.
 
 ## Quickstart
 
@@ -23,21 +23,24 @@ pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install numpy tokenizers            # + transformers, only if you want the --judge metric
 
 python -m slm.data                       # downloads ~22 MB (AO-CHILDES, TinyStories-valid, Zorro), trains a BPE tokenizer
-python -m slm.train --recipe cradle      # ~13 min on 4 CPU cores -> runs/cradle/model.pt
-python -m slm.train --recipe baseline    # same compute, plain shuffled next-token training
-python -m slm.evaluate runs/cradle/model.pt runs/baseline/model.pt [--judge]
-python -m slm.chat --checkpoint runs/cradle/model.pt
+python -m slm.train --recipe cradle --no-babble --no-sleep --name listen   # recommended "listen-only" Cradle, ~13 min
+python -m slm.train --recipe cradle --name cradle        # full 4 phases incl. the babble/feedback loop
+python -m slm.train --recipe baseline --name baseline    # same compute, plain shuffled next-token training
+python -m slm.evaluate runs/listen/model.pt runs/cradle/model.pt runs/baseline/model.pt [--judge]
+python -m slm.chat --checkpoint runs/listen/model.pt      # interactive; or add --prompt "once upon a time" -n 3
 ```
 
 For a quick smoke test, add `--budget-tokens 1e6` to the train commands (about 1 minute each).
 
-To reproduce the whole comparison (baseline, Cradle, and four ablations, then a Markdown table in `runs/report.md`):
+To reproduce the whole comparison (baseline, the Cradle variants, and the ablations, about 14 minutes per run, then a Markdown table in `runs/report.md`):
 
 ```bash
 scripts/run_experiments.sh 12e6 0        # budget (trained-token equivalents), seed
 ```
 
 Ablation flags for `slm.train --recipe cradle`: `--no-curriculum`, `--no-prior`, `--no-babble`, `--no-sleep`.
+Variant flags: `--babble-mode best-of-k`, `--cds-mix 0.07` (keep the child-directed-speech share equal to the
+baseline's), `--phases LISTEN_CDS LISTEN_STORIES BABBLE SLEEP` (budget fractions).
 
 ## Data (all public, no credentials)
 
@@ -69,6 +72,27 @@ slm/chat.py       interactive / one-shot sampling
 slm/report.py     results table
 ```
 
-## Results
+## Results (4-core CPU, 12M-token budget, about 14 minutes per run)
 
-See below (filled in from `runs/report.md` after the experiment run).
+These are held-out perplexities, so lower is better. Two-seed rows show the mean.
+
+| Recipe | Stories ppl | CHILDES ppl | Zorro | Command |
+|---|---|---|---|---|
+| Baseline (2 seeds) | 11.32 | 37.8 | 64.9% | `--recipe baseline` |
+| Cradle v1, all 4 phases | 11.60 | 34.2 | 65.4% | `--recipe cradle` |
+| **Listen-only Cradle, natural mix** (2 seeds) | **11.09 (−2.0%)** | **34.3 (−9%)** | 64.9% | `--recipe cradle --no-babble --no-sleep` |
+| **Listen-only Cradle, matched mix** (2 seeds) | **10.87 (−4.0%)** | 43.9 (+16%) | 64.4% | `... --no-babble --no-sleep --cds-mix 0.07 --phases 0.1 0.5 0.25 0.15` |
+
+What this shows:
+
+- The **listening** part of the recipe helps at the same compute: age-ordered child-directed speech first,
+  then simple-to-complex stories with a growing context, plus a bigram prior that fades out. The gain is
+  consistent across seeds, and seed noise is about 0.3%.
+- The **babble + feedback** self-improvement loop and the **sleep** (EMA self-distillation) phase both
+  *hurt* perplexity in this setup. The likely reason is that the caregiver critic only knows the same small
+  corpus, so it adds no new information.
+- Generation quality, as judged by the independent TinyStories-33M model, is a tie within noise.
+
+The full analysis, ablations, learning curves, and next experiments are in
+[`docs/slm-design.md`](docs/slm-design.md). Every
+run's raw numbers are in `runs/results.json` and `runs/report.md`.

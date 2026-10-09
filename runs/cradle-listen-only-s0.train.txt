@@ -1,0 +1,35 @@
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1-listen: child-directed speech, age-ordered, context 64 (progress 0.0%)
+  [  0.1%] step     1 train 8.348 | val stories 8.353 (ppl 4244.15) childes 8.352 | 2s
+  [  5.1%] step    74 train 4.474 | val stories 5.095 (ppl 163.20) childes 4.487 | 43s
+  [ 10.0%] step   147 train 4.074 | val stories 4.729 (ppl 113.17) childes 4.097 | 82s
+  [ 15.0%] step   220 train 3.815 | val stories 4.535 (ppl  93.25) childes 3.944 | 121s
+    > look at the other kids and. the park in the road. oh?
+    > once upon a time, there was a little boy named and there was it.
+    > what do you want to the cow?
+[phase] 2-listen: stories simple->complex, context 128->256 (progress 15.0%)
+  [ 20.0%] step   293 train 3.463 | val stories 3.284 (ppl  26.70) childes 3.897 | 162s
+  [ 25.1%] step   367 train 3.345 | val stories 3.035 (ppl  20.80) childes 3.829 | 203s
+  [ 30.0%] step   440 train 3.192 | val stories 2.899 (ppl  18.16) childes 3.750 | 244s
+  [ 35.0%] step   514 train 3.117 | val stories 2.748 (ppl  15.60) childes 3.732 | 286s
+  [ 40.1%] step   589 train 2.922 | val stories 2.650 (ppl  14.15) childes 3.697 | 328s
+  [ 45.0%] step   663 train 2.819 | val stories 2.530 (ppl  12.55) childes 3.660 | 369s
+  [ 50.0%] step   736 train 2.943 | val stories 2.478 (ppl  11.92) childes 3.659 | 412s
+  [ 55.1%] step   810 train 2.795 | val stories 2.402 (ppl  11.04) childes 3.634 | 455s
+  [ 60.0%] step   883 train 2.726 | val stories 2.351 (ppl  10.49) childes 3.612 | 497s
+    > look at the other in there. the one in the air and saw a big butterfly. the butterfly was scared and cried the sound. the butterfly flew away and the butterfly flew away. the butterfly flew away, and
+    > once upon a time, there was a little girl called jane. she was only three years old and she was always looking for a great time. every day, jane came to the field with her hand and the field was filled with sunshine. she
+    > what do you want to get?
+[phase] 3 (ablated): plain replay (progress 60.0%)
+  [ 65.0%] step   956 train 2.702 | val stories 2.304 (ppl  10.02) childes 3.606 | 536s
+  [ 70.0%] step  1029 train 2.699 | val stories 2.270 (ppl   9.68) childes 3.568 | 574s
+  [ 75.1%] step  1103 train 2.753 | val stories 2.244 (ppl   9.43) childes 3.551 | 613s
+  [ 80.0%] step  1176 train 2.641 | val stories 2.213 (ppl   9.14) childes 3.539 | 651s
+  [ 85.0%] step  1249 train 2.472 | val stories 2.188 (ppl   8.91) childes 3.525 | 690s
+[phase] 4 (ablated): plain replay (progress 85.0%)
+  [ 90.0%] step  1322 train 2.541 | val stories 2.171 (ppl   8.76) childes 3.515 | 729s
+  [ 95.1%] step  1396 train 2.481 | val stories 2.163 (ppl   8.69) childes 3.509 | 767s
+    > look at the!" suddenly, they hear a noise. it was a fire! the family had to stop looking at. the fire was very harsh and the fire was gone. soon the fire was too late. the
+    > once upon a time, there was a little girl called jane. she was only three years old. one day, she decided to explore the woods. she got out of the woods and looked around. she saw the forest, the forest, and
+    > what do you want to get?
+[done] saved runs/cradle-listen-only-s0 | {"trained_tokens": 12005504, "forward_only_tokens": 0, "units": 36016512.0, "steps": 1469, "wall_s": 804.3058023452759, "params": 3443136}

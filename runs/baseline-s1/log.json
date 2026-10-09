@@ -1,0 +1,255 @@
+{
+  "args": {
+    "recipe": "baseline",
+    "budget_tokens": 12000000.0,
+    "seed": 1,
+    "batch_tokens": 8192,
+    "lr": 0.002,
+    "warmup": 0.03,
+    "d_model": 192,
+    "n_layer": 6,
+    "n_head": 6,
+    "out": "runs",
+    "name": "baseline-s1",
+    "phases": [
+      0.15,
+      0.45,
+      0.25,
+      0.15
+    ],
+    "prior_alpha": 0.3,
+    "use_prior": true,
+    "use_curriculum": true,
+    "use_babble": true,
+    "use_sleep": true,
+    "babble_mode": "pooled",
+    "cds_mix": null,
+    "babble_k": 4,
+    "babble_rounds": 6,
+    "babble_per_round": 1024,
+    "feedback_frac": 0.2,
+    "sleep_beta": 0.5,
+    "ema_decay": 0.998,
+    "eval_every": 0.05,
+    "extra": {}
+  },
+  "curve": [
+    {
+      "progress": 0.0007,
+      "trained_tokens": 8192,
+      "step": 1,
+      "train_ce": 8.3317,
+      "stories_val": 8.3468,
+      "childes_val": 8.33,
+      "wall_s": 1.1,
+      "lr": 4.551111111111112e-05
+    },
+    {
+      "progress": 0.0505,
+      "trained_tokens": 606208,
+      "step": 74,
+      "train_ce": 4.5312,
+      "stories_val": 4.03,
+      "childes_val": 4.9593,
+      "wall_s": 39.1,
+      "lr": 0.001998013672733423
+    },
+    {
+      "progress": 0.1004,
+      "trained_tokens": 1204224,
+      "step": 147,
+      "train_ce": 3.9802,
+      "stories_val": 3.5155,
+      "childes_val": 4.549,
+      "wall_s": 77.8,
+      "lr": 0.0019767382739648847
+    },
+    {
+      "progress": 0.1502,
+      "trained_tokens": 1802240,
+      "step": 220,
+      "train_ce": 3.708,
+      "stories_val": 3.2408,
+      "childes_val": 4.3537,
+      "wall_s": 116.1,
+      "lr": 0.0019326727690825308
+    },
+    {
+      "progress": 0.2,
+      "trained_tokens": 2400256,
+      "step": 293,
+      "train_ce": 3.4758,
+      "stories_val": 3.0366,
+      "childes_val": 4.2441,
+      "wall_s": 153.3,
+      "lr": 0.0018669626054359863
+    },
+    {
+      "progress": 0.2505,
+      "trained_tokens": 3006464,
+      "step": 367,
+      "train_ce": 3.4073,
+      "stories_val": 2.8885,
+      "childes_val": 4.1749,
+      "wall_s": 191.8,
+      "lr": 0.0017800140177159523
+    },
+    {
+      "progress": 0.3004,
+      "trained_tokens": 3604480,
+      "step": 440,
+      "train_ce": 3.2084,
+      "stories_val": 2.7893,
+      "childes_val": 4.0734,
+      "wall_s": 228.8,
+      "lr": 0.0016764320923772173
+    },
+    {
+      "progress": 0.3502,
+      "trained_tokens": 4202496,
+      "step": 513,
+      "train_ce": 3.082,
+      "stories_val": 2.6773,
+      "childes_val": 4.0084,
+      "wall_s": 266.3,
+      "lr": 0.0015578662785248943
+    },
+    {
+      "progress": 0.4,
+      "trained_tokens": 4800512,
+      "step": 586,
+      "train_ce": 3.0867,
+      "stories_val": 2.6053,
+      "childes_val": 3.9892,
+      "wall_s": 304.2,
+      "lr": 0.0014273985991063172
+    },
+    {
+      "progress": 0.4506,
+      "trained_tokens": 5406720,
+      "step": 660,
+      "train_ce": 3.0025,
+      "stories_val": 2.535,
+      "childes_val": 3.9106,
+      "wall_s": 342.7,
+      "lr": 0.001286474203300986
+    },
+    {
+      "progress": 0.5004,
+      "trained_tokens": 6004736,
+      "step": 733,
+      "train_ce": 2.8427,
+      "stories_val": 2.4675,
+      "childes_val": 3.8377,
+      "wall_s": 383.3,
+      "lr": 0.001142556915919514
+    },
+    {
+      "progress": 0.5502,
+      "trained_tokens": 6602752,
+      "step": 806,
+      "train_ce": 2.9067,
+      "stories_val": 2.4195,
+      "childes_val": 3.8243,
+      "wall_s": 420.5,
+      "lr": 0.0009975333957448764
+    },
+    {
+      "progress": 0.6001,
+      "trained_tokens": 7200768,
+      "step": 879,
+      "train_ce": 2.8396,
+      "stories_val": 2.3689,
+      "childes_val": 3.7866,
+      "wall_s": 458.1,
+      "lr": 0.0008551734125155768
+    },
+    {
+      "progress": 0.6506,
+      "trained_tokens": 7806976,
+      "step": 953,
+      "train_ce": 2.6611,
+      "stories_val": 2.3268,
+      "childes_val": 3.7403,
+      "wall_s": 495.7,
+      "lr": 0.000717375458683883
+    },
+    {
+      "progress": 0.7004,
+      "trained_tokens": 8404992,
+      "step": 1026,
+      "train_ce": 2.8086,
+      "stories_val": 2.2911,
+      "childes_val": 3.7211,
+      "wall_s": 533.3,
+      "lr": 0.0005914377722928467
+    },
+    {
+      "progress": 0.7503,
+      "trained_tokens": 9003008,
+      "step": 1099,
+      "train_ce": 2.5459,
+      "stories_val": 2.2581,
+      "childes_val": 3.6928,
+      "wall_s": 571.3,
+      "lr": 0.0004787197518832102
+    },
+    {
+      "progress": 0.8001,
+      "trained_tokens": 9601024,
+      "step": 1172,
+      "train_ce": 2.5293,
+      "stories_val": 2.2374,
+      "childes_val": 3.6786,
+      "wall_s": 608.9,
+      "lr": 0.0003821514117161933
+    },
+    {
+      "progress": 0.8506,
+      "trained_tokens": 10207232,
+      "step": 1246,
+      "train_ce": 2.5866,
+      "stories_val": 2.218,
+      "childes_val": 3.6587,
+      "wall_s": 646.6,
+      "lr": 0.00030331532262039716
+    },
+    {
+      "progress": 0.9004,
+      "trained_tokens": 10805248,
+      "step": 1319,
+      "train_ce": 2.5871,
+      "stories_val": 2.1968,
+      "childes_val": 3.642,
+      "wall_s": 684.7,
+      "lr": 0.0002463869061358769
+    },
+    {
+      "progress": 0.9503,
+      "trained_tokens": 11403264,
+      "step": 1392,
+      "train_ce": 2.465,
+      "stories_val": 2.1856,
+      "childes_val": 3.6285,
+      "wall_s": 722.1,
+      "lr": 0.0002116474753121842
+    }
+  ],
+  "phases": [
+    {
+      "name": "baseline: shuffled next-token prediction",
+      "start_progress": 0.0,
+      "wall_s": 0.0002841949462890625
+    }
+  ],
+  "babble": [],
+  "diary": [],
+  "summary": {
+    "trained_tokens": 12001280,
+    "forward_only_tokens": 0,
+    "units": 36003840.0,
+    "steps": 1465,
+    "wall_s": 759.5084722042084,
+    "params": 3443136
+  }
+}

@@ -1,0 +1,466 @@
+{
+  "args": {
+    "recipe": "cradle",
+    "budget_tokens": 12000000.0,
+    "seed": 0,
+    "batch_tokens": 8192,
+    "lr": 0.002,
+    "warmup": 0.03,
+    "d_model": 192,
+    "n_layer": 6,
+    "n_head": 6,
+    "out": "runs",
+    "name": "cradle-v2-s0",
+    "phases": [
+      0.1,
+      0.5,
+      0.25,
+      0.15
+    ],
+    "prior_alpha": 0.3,
+    "use_prior": true,
+    "use_curriculum": true,
+    "use_babble": true,
+    "use_sleep": false,
+    "babble_mode": "best-of-k",
+    "cds_mix": 0.07,
+    "babble_k": 4,
+    "babble_rounds": 6,
+    "babble_per_round": 1024,
+    "feedback_frac": 0.2,
+    "sleep_beta": 0.5,
+    "ema_decay": 0.998,
+    "eval_every": 0.05,
+    "extra": {}
+  },
+  "curve": [
+    {
+      "progress": 0.0007,
+      "trained_tokens": 8192,
+      "step": 1,
+      "train_ce": 8.3483,
+      "stories_val": 8.3533,
+      "childes_val": 8.3522,
+      "wall_s": 1.4,
+      "lr": 4.551111111111112e-05
+    },
+    {
+      "progress": 0.0505,
+      "trained_tokens": 606208,
+      "step": 74,
+      "train_ce": 4.404,
+      "stories_val": 5.0403,
+      "childes_val": 4.4779,
+      "wall_s": 72.0,
+      "lr": 0.001998013672733423
+    },
+    {
+      "progress": 0.1004,
+      "trained_tokens": 1204224,
+      "step": 147,
+      "train_ce": 4.0141,
+      "stories_val": 4.696,
+      "childes_val": 4.1281,
+      "wall_s": 152.6,
+      "lr": 0.0019767382739648847
+    },
+    {
+      "progress": 0.1502,
+      "trained_tokens": 1802240,
+      "step": 220,
+      "train_ce": 3.3181,
+      "stories_val": 3.2804,
+      "childes_val": 4.3602,
+      "wall_s": 192.3,
+      "lr": 0.0019326727690825308
+    },
+    {
+      "progress": 0.2,
+      "trained_tokens": 2400256,
+      "step": 293,
+      "train_ce": 3.0178,
+      "stories_val": 3.0327,
+      "childes_val": 4.2702,
+      "wall_s": 231.9,
+      "lr": 0.0018669626054359863
+    },
+    {
+      "progress": 0.2505,
+      "trained_tokens": 3006464,
+      "step": 367,
+      "train_ce": 2.9059,
+      "stories_val": 2.8673,
+      "childes_val": 4.2429,
+      "wall_s": 273.1,
+      "lr": 0.0017800140177159523
+    },
+    {
+      "progress": 0.3005,
+      "trained_tokens": 3606272,
+      "step": 441,
+      "train_ce": 2.9411,
+      "stories_val": 2.7431,
+      "childes_val": 4.1525,
+      "wall_s": 312.1,
+      "lr": 0.0016760977342229256
+    },
+    {
+      "progress": 0.3503,
+      "trained_tokens": 4203008,
+      "step": 515,
+      "train_ce": 2.9094,
+      "stories_val": 2.6369,
+      "childes_val": 4.094,
+      "wall_s": 350.2,
+      "lr": 0.0015577592030757196
+    },
+    {
+      "progress": 0.4007,
+      "trained_tokens": 4807808,
+      "step": 590,
+      "train_ce": 2.7029,
+      "stories_val": 2.5316,
+      "childes_val": 4.0447,
+      "wall_s": 390.6,
+      "lr": 0.001425747141570767
+    },
+    {
+      "progress": 0.4506,
+      "trained_tokens": 5407744,
+      "step": 664,
+      "train_ce": 2.8156,
+      "stories_val": 2.4843,
+      "childes_val": 4.0117,
+      "wall_s": 432.3,
+      "lr": 0.0012862308573621743
+    },
+    {
+      "progress": 0.5005,
+      "trained_tokens": 6005760,
+      "step": 737,
+      "train_ce": 2.8241,
+      "stories_val": 2.4237,
+      "childes_val": 3.9874,
+      "wall_s": 474.4,
+      "lr": 0.0011423084561216759
+    },
+    {
+      "progress": 0.5503,
+      "trained_tokens": 6603776,
+      "step": 810,
+      "train_ce": 2.6885,
+      "stories_val": 2.366,
+      "childes_val": 3.9542,
+      "wall_s": 514.9,
+      "lr": 0.0009972862806005769
+    },
+    {
+      "progress": 0.6001,
+      "trained_tokens": 7201792,
+      "step": 883,
+      "train_ce": 2.6361,
+      "stories_val": 2.2948,
+      "childes_val": 3.9165,
+      "wall_s": 554.7,
+      "lr": 0.000854934065584192
+    },
+    {
+      "progress": 0.6507,
+      "trained_tokens": 7767040,
+      "step": 952,
+      "train_ce": 2.5552,
+      "stories_val": 2.2833,
+      "childes_val": 3.9167,
+      "wall_s": 603.0,
+      "lr": 0.0007171503349211425
+    },
+    {
+      "progress": 0.7002,
+      "trained_tokens": 8340480,
+      "step": 1022,
+      "train_ce": 2.4409,
+      "stories_val": 2.2681,
+      "childes_val": 3.8727,
+      "wall_s": 644.8,
+      "lr": 0.0005920536021356555
+    },
+    {
+      "progress": 0.7503,
+      "trained_tokens": 8922112,
+      "step": 1093,
+      "train_ce": 2.5006,
+      "stories_val": 2.2304,
+      "childes_val": 3.8353,
+      "wall_s": 688.9,
+      "lr": 0.0004785398117380502
+    },
+    {
+      "progress": 0.8005,
+      "trained_tokens": 9503744,
+      "step": 1164,
+      "train_ce": 2.6094,
+      "stories_val": 2.2112,
+      "childes_val": 3.814,
+      "wall_s": 733.1,
+      "lr": 0.0003814019405242122
+    },
+    {
+      "progress": 0.85,
+      "trained_tokens": 10077184,
+      "step": 1234,
+      "train_ce": 2.5517,
+      "stories_val": 2.1848,
+      "childes_val": 3.8004,
+      "wall_s": 777.3,
+      "lr": 0.0003041267995916443
+    },
+    {
+      "progress": 0.9005,
+      "trained_tokens": 10683392,
+      "step": 1308,
+      "train_ce": 2.4489,
+      "stories_val": 2.163,
+      "childes_val": 3.7812,
+      "wall_s": 817.7,
+      "lr": 0.0002463081141978693
+    },
+    {
+      "progress": 0.9504,
+      "trained_tokens": 11281408,
+      "step": 1381,
+      "train_ce": 2.3811,
+      "stories_val": 2.1426,
+      "childes_val": 3.7648,
+      "wall_s": 856.4,
+      "lr": 0.00021160762151061787
+    }
+  ],
+  "phases": [
+    {
+      "name": "1-listen: child-directed speech, age-ordered, context 64",
+      "start_progress": 0.0,
+      "wall_s": 0.369598388671875
+    },
+    {
+      "name": "2-listen: stories simple->complex, context 128->256",
+      "start_progress": 0.100352,
+      "wall_s": 152.6550886631012
+    },
+    {
+      "name": "3-babble: talk, get caregiver feedback, learn from praise and recasts",
+      "start_progress": 0.6001493333333333,
+      "wall_s": 554.8426501750946
+    },
+    {
+      "name": "4 (ablated): plain replay",
+      "start_progress": 0.8500053333333333,
+      "wall_s": 777.466578245163
+    }
+  ],
+  "babble": [
+    {
+      "round": 0,
+      "domains": [
+        {
+          "domain": "cds",
+          "fluency": -3.8732285499897405,
+          "disc_log_p_real": -1.7022862434387207,
+          "repetition": 0.006948732143167349,
+          "ended": 0.5703125,
+          "disc_acc_train": 0.800000011920929,
+          "best": "so let's see now who's in the park.",
+          "worst": "okay go ahead? no boo-boo! oh she wanted to go to. i need a cup, please i?",
+          "worst_recast": "okay go ahead? no boo we can't really dance in here sweetie. we usually dance on the bed but daddy's in there doing a little work? how about do you want to build with these? or work on your"
+        },
+        {
+          "domain": "story",
+          "fluency": -3.4307895748618646,
+          "disc_log_p_real": -1.5965343713760376,
+          "repetition": 0.013322823720012198,
+          "ended": 0.177734375,
+          "disc_acc_train": 0.800000011920929,
+          "best": "one day, two friends mike and emma were walking in the park. they saw a small tree with lots of colorful flowers on it. it was shiny and yellow. they said, \"hello, but be gentle, they were going to make it better.\"",
+          "worst": "once there was a lonely hunter. he had nothing was coming to be seen! the fox heard a so sad! suddenly he heard a small barking noise, so he decided to stay up into the hive. the bee flew away with the ground, and he hopped in the wind. he was so scared that the bunny shouted, \"this is mine!\" but the",
+          "worst_recast": "once there was a lonely hunter. he had nothing, but his bow and his arrows. he would go out to shoot and bring back food for himself. one day, he shot his arrow into the forest and on his way back home, he heard a loud noise! it was a baby deer! he was so surprised at the sight of the tiny creature that"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "domains": [
+        {
+          "domain": "cds",
+          "fluency": -3.7642757768522945,
+          "disc_log_p_real": -1.6658865213394165,
+          "repetition": 0.006167300126788533,
+          "ended": 0.486328125,
+          "disc_acc_train": 0.800000011920929,
+          "best": "i want you to eat. please don't.",
+          "worst": "oh okay. so. ah hm nightwoh you're so tired.",
+          "worst_recast": "oh okay. so. ah one thirty now. yes oh that's right yes i forgot actually leaves at two we have to be there half an hour. you wanna lay an egg and a nest and be a hen?"
+        },
+        {
+          "domain": "story",
+          "fluency": -3.348597808189245,
+          "disc_log_p_real": -1.5850505828857422,
+          "repetition": 0.014743837917521718,
+          "ended": 0.18359375,
+          "disc_acc_train": 0.800000011920929,
+          "best": "one day, tom went to the airport with his owner. they were very curious about everything they could go on the farm.",
+          "worst": "once upon a time, there was a blueb in the sky. the man couldn't see a beautiful sight. he was so excited to see a beautiful sight of the world. he had a safe and full of exciting things, like all the way to do. he loved the clear and filled with them to the same house. as he put out the beauty, he",
+          "worst_recast": "once upon a time, there was a bluebird called toby. toby was a very curious bird and always liked to explore new places. one day, toby's friend, a rabbit called sandy, asked toby to go for a drive in the park. sandy said, \"toby, i'd like for you to come for a drive. it'll be fun!\""
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "domains": [
+        {
+          "domain": "cds",
+          "fluency": -3.8598186006847945,
+          "disc_log_p_real": -1.6862297058105469,
+          "repetition": 0.006153623306338278,
+          "ended": 0.53515625,
+          "disc_acc_train": 0.800000011920929,
+          "best": "yup push the circle? what's that?",
+          "worst": "his mother held on to hold a little one too. but mommy held it over the window of the window and said, \"see, i's trying to reach the door. it's just getting down and see how many things",
+          "worst_recast": "his mother held on to the seat. try it i won't let you go until you tell me to. franklin pedaled while his mother guided the bike from behind. he felt unsteady and very"
+        },
+        {
+          "domain": "story",
+          "fluency": -3.3411721997835224,
+          "disc_log_p_real": -1.586567997932434,
+          "repetition": 0.015237602063967702,
+          "ended": 0.18359375,
+          "disc_acc_train": 0.800000011920929,
+          "best": "once there was a little girl named mary. she was playing in the park when she saw a big box in the corner. it was so pretty, she wanted to touch it, but she didn't know what it belonged. she watched as she watched the box so happy to see the box just a toy. the end.",
+          "worst": "ben is a farmer. he has a big farm with many animals. he wants to be his home, but no one says they are not.\" he says he can be friends. they want to play with the animals. they decide to be happy and brave enough. they run off to the farm. the zoo has a big rope on the side. anna and tom are",
+          "worst_recast": "ben is a farmer. he has a big farm with many animals. he likes to feed the cows, the pigs, the sheep and the chickens. he also likes to grow corn, carrots, apples and pumpkins. one day, ben has to go to the town. he has to sell some of his food and buy some things for his farm"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "domains": [
+        {
+          "domain": "cds",
+          "fluency": -3.8374296330703324,
+          "disc_log_p_real": -1.6965938806533813,
+          "repetition": 0.004818961397560415,
+          "ended": 0.677734375,
+          "disc_acc_train": 0.800000011920929,
+          "best": "oh careful. careful of my pocket is broken.",
+          "worst": "right. like a kangaroo in the school.",
+          "worst_recast": "right. like a kangaroo come on let's jump it's fun to do like a kangaroo. where's your mail for gabby and debbie? is it over here. is it over here is this your"
+        },
+        {
+          "domain": "story",
+          "fluency": -3.3326762124278453,
+          "disc_log_p_real": -1.5902581214904785,
+          "repetition": 0.016391658191474087,
+          "ended": 0.138671875,
+          "disc_acc_train": 0.800000011920929,
+          "best": "bob was a 3-year-old boy who loved to play outside in the water. one day, he found a new collar on the ground. he picked it up and looked down. he was very happy and curious. suddenly, he heard a loud noise. he looked around and saw a little bird flying towards him. the bear chased it out of the sky",
+          "worst": "sam's mum had made some amazing pastries for their dinner. they decided to try some more toast together. sam had a yummy lunch and milk. maybe was some ready to eat the pastel every time he cooked it. sam smiled and said, \"ok, sam, so how does this tastes like me a special tuna!\" tim smiled, and they all",
+          "worst_recast": "sam's mum had made some amazing pastries for him and his brother to eat. they were so delicious. every time sam took a bite of the pastry, he felt so comforted. one day, his mum asked him and his brother to go for a walk outside. when the boys got home, they saw a huge furry dog. sam's brother was scared"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "domains": [
+        {
+          "domain": "cds",
+          "fluency": -3.858136530089209,
+          "disc_log_p_real": -1.6817902326583862,
+          "repetition": 0.005447421338566021,
+          "ended": 0.5546875,
+          "disc_acc_train": 0.800000011920929,
+          "best": "hello and goodbye the end? there you go!",
+          "worst": "they go in th? aha? no. a frog? a light is! there?",
+          "worst_recast": "they go in th? aha i mean. what do you want? i showed ross or ross saw those oponki hanging up and when he ah i said he wore them when he was a baby. no that's that"
+        },
+        {
+          "domain": "story",
+          "fluency": -3.3217898493459335,
+          "disc_log_p_real": -1.5822269916534424,
+          "repetition": 0.013300140627399086,
+          "ended": 0.13671875,
+          "disc_acc_train": 0.800000011920929,
+          "best": "tim and sam were best friends. they liked to play together all day long.",
+          "worst": "tom and mia are friends. they like to play in the park with each other. spot likes to help the slide in the park. one day, he says to the swings, and you have to go in the back of his house. tom likes to go on a walk, and see a big rock. he tries to reach the branch, but it doesn't know",
+          "worst_recast": "tom and mia are friends. they like to play with toys in the yard. one day, they find a big frame in the trash. the frame is hard and shiny. it has many colors and shapes. \"wow, look at this!\" tom says. \"it is so pretty!\" \"can we play with it?\" mia asks. \"sure, why"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "domains": [
+        {
+          "domain": "cds",
+          "fluency": -3.8096048041653887,
+          "disc_log_p_real": -1.654976725578308,
+          "repetition": 0.006594872274759365,
+          "ended": 0.5703125,
+          "disc_acc_train": 0.800000011920929,
+          "best": "that's the only thing? what's that?",
+          "worst": "poor franklin. you did not have to eat this cup, too. thank you?",
+          "worst_recast": "poor franklin. for the rest of the week franklin felt left out. he watched as his friends rode off without him. they were becoming great explorers on their bikes? what are"
+        },
+        {
+          "domain": "story",
+          "fluency": -3.272399542976828,
+          "disc_log_p_real": -1.5771024227142334,
+          "repetition": 0.012738211930043385,
+          "ended": 0.142578125,
+          "disc_acc_train": 0.800000011920929,
+          "best": "once upon a time, there was an angel. she lived in a big forest. tom was very adventurous and he was having a lot of fun.",
+          "worst": "anna and ben like to play with cardboard. they have an expensive cardboard that is yellow from the cardboard. the mail is your doll, a letter can make the letter that is a different spot? can you make a mess on your card: it's a toy. it is his grandma. she says it is not grandma's name. grandma is happy.",
+          "worst_recast": "anna and ben like to play with cardboard. they have many boxes and tubes and cut them and stick them. they make houses and cars and rockets and animals. they have fun. one day, anna finds a big cardboard box in the garage. she thinks it is perfect for a castle. she asks ben to help her. ben says yes."
+        }
+      ]
+    }
+  ],
+  "diary": [
+    {
+      "phase": "1-listen",
+      "samples": [
+        "look at the door in there was the best. there was it? it's the door and. she liked that.",
+        "once upon a time, there was a little girl too!",
+        "what do you want to play in his car is that. the yellow is too?"
+      ]
+    },
+    {
+      "phase": "2-listen",
+      "samples": [
+        "look at the flower. there was the flower in the flower. timmy thought it was so pretty. he decided that it was a secret! his friend opened his car and took him home. the little bird was so",
+        "once upon a time, there was a little boy called tim. tim loved to play outside. every day he would look for food, but one day he got stuck on a rock. one day, tim saw the rain falling down his way.",
+        "what do you want to get?"
+      ]
+    },
+    {
+      "phase": "3-babble",
+      "samples": [
+        "look at the bird. there was the bird in the air. it wanted to see what had happened. the bird flew down to the ground and the bird flew away. it could not roll the ball anymore. the",
+        "once upon a time, there was a little girl called anna. she loved to play outside in the garden. one day, she found a big bush. she said, \"mommy, can you open the bush?\" the bush said, \"yes",
+        "what do you want to get out?\" he asked, \"it's a fun day playing on the swings, but there's the park there and we don't think we should do something special and we can't find out if"
+      ]
+    },
+    {
+      "phase": "4-sleep",
+      "samples": [
+        "look at the squirrel. there was the squirrel in the tree. he wanted to see what was coming from the tree. the squirrel was very fast and the squirrel was scared. soon the squirrel ran away from the tree",
+        "once upon a time, there was a little girl called jane. jane loved to play outside in the garden. one day, jane found a big bush. it was very tall and quiet. she picked it up and ran to the bush. she",
+        "what do you want to get out of the house? i don't know where's one. now that one is there? what's there were?"
+      ]
+    }
+  ],
+  "summary": {
+    "trained_tokens": 11879424,
+    "forward_only_tokens": 368640,
+    "units": 36006912.0,
+    "steps": 1454,
+    "wall_s": 894.0826494693756,
+    "params": 3443136
+  }
+}
