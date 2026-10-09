@@ -1,0 +1,346 @@
+{
+  "args": {
+    "recipe": "cradle",
+    "budget_tokens": 12000000.0,
+    "seed": 0,
+    "batch_tokens": 8192,
+    "lr": 0.002,
+    "warmup": 0.03,
+    "d_model": 192,
+    "n_layer": 6,
+    "n_head": 6,
+    "out": "runs",
+    "name": "cradle-no-curriculum-s0",
+    "phases": [
+      0.15,
+      0.45,
+      0.25,
+      0.15
+    ],
+    "prior_alpha": 0.3,
+    "use_prior": true,
+    "use_curriculum": false,
+    "use_babble": true,
+    "use_sleep": true,
+    "babble_rounds": 6,
+    "babble_per_round": 1024,
+    "feedback_frac": 0.2,
+    "sleep_beta": 0.5,
+    "ema_decay": 0.998,
+    "eval_every": 0.05,
+    "extra": {}
+  },
+  "curve": [
+    {
+      "progress": 0.0007,
+      "trained_tokens": 8192,
+      "step": 1,
+      "train_ce": 8.3557,
+      "stories_val": 8.3533,
+      "childes_val": 8.3522,
+      "wall_s": 1.7,
+      "lr": 4.551111111111112e-05
+    },
+    {
+      "progress": 0.0505,
+      "trained_tokens": 606208,
+      "step": 74,
+      "train_ce": 4.4109,
+      "stories_val": 3.9762,
+      "childes_val": 4.9056,
+      "wall_s": 46.1,
+      "lr": 0.001998013672733423
+    },
+    {
+      "progress": 0.1004,
+      "trained_tokens": 1204224,
+      "step": 147,
+      "train_ce": 3.8726,
+      "stories_val": 3.4697,
+      "childes_val": 4.5395,
+      "wall_s": 90.4,
+      "lr": 0.0019767382739648847
+    },
+    {
+      "progress": 0.1502,
+      "trained_tokens": 1802240,
+      "step": 220,
+      "train_ce": 3.6401,
+      "stories_val": 3.2105,
+      "childes_val": 4.3317,
+      "wall_s": 135.1,
+      "lr": 0.0019326727690825308
+    },
+    {
+      "progress": 0.2,
+      "trained_tokens": 2400256,
+      "step": 293,
+      "train_ce": 3.6173,
+      "stories_val": 3.0723,
+      "childes_val": 4.2176,
+      "wall_s": 178.6,
+      "lr": 0.0018669626054359863
+    },
+    {
+      "progress": 0.2505,
+      "trained_tokens": 3006464,
+      "step": 367,
+      "train_ce": 3.1837,
+      "stories_val": 2.9054,
+      "childes_val": 4.1159,
+      "wall_s": 222.1,
+      "lr": 0.0017800140177159523
+    },
+    {
+      "progress": 0.3004,
+      "trained_tokens": 3604480,
+      "step": 440,
+      "train_ce": 3.3928,
+      "stories_val": 2.7926,
+      "childes_val": 4.0584,
+      "wall_s": 264.6,
+      "lr": 0.0016764320923772173
+    },
+    {
+      "progress": 0.3502,
+      "trained_tokens": 4202496,
+      "step": 513,
+      "train_ce": 3.1305,
+      "stories_val": 2.7048,
+      "childes_val": 3.976,
+      "wall_s": 306.0,
+      "lr": 0.0015578662785248943
+    },
+    {
+      "progress": 0.4,
+      "trained_tokens": 4800512,
+      "step": 586,
+      "train_ce": 2.9908,
+      "stories_val": 2.6137,
+      "childes_val": 3.9261,
+      "wall_s": 351.7,
+      "lr": 0.0014273985991063172
+    },
+    {
+      "progress": 0.4506,
+      "trained_tokens": 5406720,
+      "step": 660,
+      "train_ce": 3.0037,
+      "stories_val": 2.5316,
+      "childes_val": 3.8656,
+      "wall_s": 394.3,
+      "lr": 0.001286474203300986
+    },
+    {
+      "progress": 0.5004,
+      "trained_tokens": 6004736,
+      "step": 733,
+      "train_ce": 2.8375,
+      "stories_val": 2.4656,
+      "childes_val": 3.825,
+      "wall_s": 437.5,
+      "lr": 0.001142556915919514
+    },
+    {
+      "progress": 0.5502,
+      "trained_tokens": 6602752,
+      "step": 806,
+      "train_ce": 2.8867,
+      "stories_val": 2.4187,
+      "childes_val": 3.7712,
+      "wall_s": 482.6,
+      "lr": 0.0009975333957448764
+    },
+    {
+      "progress": 0.6001,
+      "trained_tokens": 7200768,
+      "step": 879,
+      "train_ce": 3.0008,
+      "stories_val": 2.3677,
+      "childes_val": 3.7517,
+      "wall_s": 527.5,
+      "lr": 0.0008551734125155768
+    },
+    {
+      "progress": 0.6506,
+      "trained_tokens": 7766016,
+      "step": 948,
+      "train_ce": 2.4727,
+      "stories_val": 2.352,
+      "childes_val": 3.7406,
+      "wall_s": 584.8,
+      "lr": 0.000717375458683883
+    },
+    {
+      "progress": 0.7001,
+      "trained_tokens": 8339456,
+      "step": 1018,
+      "train_ce": 2.6927,
+      "stories_val": 2.3181,
+      "childes_val": 3.7002,
+      "wall_s": 630.9,
+      "lr": 0.0005922589563672347
+    },
+    {
+      "progress": 0.7503,
+      "trained_tokens": 8921088,
+      "step": 1089,
+      "train_ce": 2.6412,
+      "stories_val": 2.2813,
+      "childes_val": 3.6816,
+      "wall_s": 675.8,
+      "lr": 0.0004787197518832102
+    },
+    {
+      "progress": 0.8004,
+      "trained_tokens": 9502720,
+      "step": 1160,
+      "train_ce": 2.5962,
+      "stories_val": 2.2606,
+      "childes_val": 3.6528,
+      "wall_s": 720.4,
+      "lr": 0.00038155172503179604
+    },
+    {
+      "progress": 0.8506,
+      "trained_tokens": 10084352,
+      "step": 1231,
+      "train_ce": 2.4276,
+      "stories_val": 2.237,
+      "childes_val": 3.6375,
+      "wall_s": 765.9,
+      "lr": 0.00030331532262039716
+    },
+    {
+      "progress": 0.9007,
+      "trained_tokens": 10534912,
+      "step": 1286,
+      "train_ce": 2.6069,
+      "stories_val": 2.2543,
+      "childes_val": 3.6427,
+      "wall_s": 813.3,
+      "lr": 0.0002461769392088145
+    },
+    {
+      "progress": 0.9507,
+      "trained_tokens": 10985472,
+      "step": 1341,
+      "train_ce": 2.6231,
+      "stories_val": 2.2431,
+      "childes_val": 3.6336,
+      "wall_s": 859.8,
+      "lr": 0.00021143570587512064
+    }
+  ],
+  "phases": [
+    {
+      "name": "1+2 (ablated): shuffled next-token prediction",
+      "start_progress": 0.0,
+      "wall_s": 0.46333932876586914
+    },
+    {
+      "name": "3-babble: talk, get caregiver feedback, learn from praise and recasts",
+      "start_progress": 0.600064,
+      "wall_s": 527.5094406604767
+    },
+    {
+      "name": "4-sleep: consolidate by distilling from the EMA (memory) model",
+      "start_progress": 0.8506026666666666,
+      "wall_s": 766.0405089855194
+    }
+  ],
+  "babble": [
+    {
+      "round": 0,
+      "fluency": -3.662630203541745,
+      "disc_log_p_real": -0.7704604864120483,
+      "repetition": 0.009010048174152432,
+      "ended": 0.3642578125,
+      "disc_acc_train": 0.7724609375,
+      "best": "slap me low. i didn't want to take a nap.",
+      "worst": "where are they flying to?",
+      "worst_recast": "where are they? where are they? where are you pants? that sounds very silly to me. okay let see."
+    },
+    {
+      "round": 1,
+      "fluency": -3.548844031888158,
+      "disc_log_p_real": -0.7679147720336914,
+      "repetition": 0.01071878315299276,
+      "ended": 0.4072265625,
+      "disc_acc_train": 0.810546875,
+      "best": "and um so she's oink oink!",
+      "worst": "we have all different kinds.",
+      "worst_recast": "that's a kitty cat. mhm. that's dingo in his car! those are all different kinds of tails! what's that?"
+    },
+    {
+      "round": 2,
+      "fluency": -3.6663216493227946,
+      "disc_log_p_real": -0.7735736966133118,
+      "repetition": 0.009900138227515246,
+      "ended": 0.4287109375,
+      "disc_acc_train": 0.77294921875,
+      "best": "you funny bunny uh oh no i didn't like that?",
+      "worst": "tim and sue were friends who liked to travel.",
+      "worst_recast": "tim and sue were friends who liked to travel. they had a big map on the wall and they put stickers on the places they wanted to see. one day, they decided to go to the farm with their bikes. they packed some snacks and water and put on their helmets. the farm was far away,"
+    },
+    {
+      "round": 3,
+      "fluency": -3.5261682130396554,
+      "disc_log_p_real": -0.7672189474105835,
+      "repetition": 0.009249455574263085,
+      "ended": 0.4140625,
+      "disc_acc_train": 0.775390625,
+      "best": "what's he doing there? we don't know what it was?",
+      "worst": "more on your other arm.",
+      "worst_recast": "more? mm. can i have some coffee too? here. thank you."
+    },
+    {
+      "round": 4,
+      "fluency": -3.494781700333884,
+      "disc_log_p_real": -0.7510985136032104,
+      "repetition": 0.011469363649142616,
+      "ended": 0.3671875,
+      "disc_acc_train": 0.78125,
+      "best": "listen we have to get in trouble.",
+      "worst": "yeah. lily says yes.",
+      "worst_recast": "yes it does. yes it does. yes. yes. yes."
+    },
+    {
+      "round": 5,
+      "fluency": -3.5189224497379508,
+      "disc_log_p_real": -0.7654132843017578,
+      "repetition": 0.0094851438166953,
+      "ended": 0.4306640625,
+      "disc_acc_train": 0.794921875,
+      "best": "excellent. yes but you can't do it.",
+      "worst": "fabian on the window",
+      "worst_recast": "ababa. ababababa. dababa. ah. oh the feeding is tiring huh?"
+    }
+  ],
+  "diary": [
+    {
+      "phase": "3-babble",
+      "samples": [
+        "look at the blue square and said, \"look at my purple square with a butterfly!\" lily was scared, but she did not know what to do. she asked her mom, \"why are you sad?\" her",
+        "once upon a time, there was a little girl called jane. jane loved to play outside in the garden. one day, she found a big tree. she said, \"mommy, can i open the tree?\" the tree said, \"no",
+        "what do you want to get to go? what are you going to do with?"
+      ]
+    },
+    {
+      "phase": "4-sleep",
+      "samples": [
+        "look at the sky. there was the best land in the park! it was so much fun. one day, a little girl named lucy wanted to join in the park. she asked her mom if she could go",
+        "once upon a time, there was a little girl called jane. jane loved to play outside in the garden with her toys. every day she would run around the garden, admire the world and see the trees. one day, she was sitting",
+        "what do you want to get?"
+      ]
+    }
+  ],
+  "summary": {
+    "trained_tokens": 11436032,
+    "forward_only_tokens": 1720320,
+    "units": 36028416.0,
+    "steps": 1396,
+    "wall_s": 905.694164276123,
+    "params": 3443136
+  }
+}

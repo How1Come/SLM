@@ -1,0 +1,369 @@
+{
+  "args": {
+    "recipe": "cradle",
+    "budget_tokens": 12000000.0,
+    "seed": 0,
+    "batch_tokens": 8192,
+    "lr": 0.002,
+    "warmup": 0.03,
+    "d_model": 192,
+    "n_layer": 6,
+    "n_head": 6,
+    "out": "runs",
+    "name": "cradle-no-prior-s0",
+    "phases": [
+      0.15,
+      0.45,
+      0.25,
+      0.15
+    ],
+    "prior_alpha": 0.3,
+    "use_prior": false,
+    "use_curriculum": true,
+    "use_babble": true,
+    "use_sleep": true,
+    "babble_mode": "pooled",
+    "babble_k": 4,
+    "babble_rounds": 6,
+    "babble_per_round": 1024,
+    "feedback_frac": 0.2,
+    "sleep_beta": 0.5,
+    "ema_decay": 0.998,
+    "eval_every": 0.05,
+    "extra": {}
+  },
+  "curve": [
+    {
+      "progress": 0.0007,
+      "trained_tokens": 8192,
+      "step": 1,
+      "train_ce": 8.3483,
+      "stories_val": 8.3533,
+      "childes_val": 8.3522,
+      "wall_s": 1.0,
+      "lr": 4.551111111111112e-05
+    },
+    {
+      "progress": 0.0505,
+      "trained_tokens": 606208,
+      "step": 74,
+      "train_ce": 4.4537,
+      "stories_val": 6.4037,
+      "childes_val": 4.4611,
+      "wall_s": 35.6,
+      "lr": 0.001998013672733423
+    },
+    {
+      "progress": 0.1004,
+      "trained_tokens": 1204224,
+      "step": 147,
+      "train_ce": 4.0416,
+      "stories_val": 6.2312,
+      "childes_val": 4.1014,
+      "wall_s": 70.7,
+      "lr": 0.0019767382739648847
+    },
+    {
+      "progress": 0.1502,
+      "trained_tokens": 1802240,
+      "step": 220,
+      "train_ce": 3.7963,
+      "stories_val": 6.1162,
+      "childes_val": 3.9431,
+      "wall_s": 105.2,
+      "lr": 0.0019326727690825308
+    },
+    {
+      "progress": 0.2,
+      "trained_tokens": 2400256,
+      "step": 293,
+      "train_ce": 3.5019,
+      "stories_val": 3.4097,
+      "childes_val": 3.9048,
+      "wall_s": 141.1,
+      "lr": 0.0018669626054359863
+    },
+    {
+      "progress": 0.2505,
+      "trained_tokens": 3006464,
+      "step": 367,
+      "train_ce": 3.3578,
+      "stories_val": 3.1043,
+      "childes_val": 3.8297,
+      "wall_s": 177.6,
+      "lr": 0.0017800140177159523
+    },
+    {
+      "progress": 0.3004,
+      "trained_tokens": 3604480,
+      "step": 440,
+      "train_ce": 3.2213,
+      "stories_val": 2.96,
+      "childes_val": 3.7501,
+      "wall_s": 213.8,
+      "lr": 0.0016764320923772173
+    },
+    {
+      "progress": 0.3501,
+      "trained_tokens": 4201216,
+      "step": 514,
+      "train_ce": 3.1617,
+      "stories_val": 2.7838,
+      "childes_val": 3.7467,
+      "wall_s": 295.0,
+      "lr": 0.0015581339288916868
+    },
+    {
+      "progress": 0.4005,
+      "trained_tokens": 4806016,
+      "step": 589,
+      "train_ce": 2.9383,
+      "stories_val": 2.6872,
+      "childes_val": 3.7187,
+      "wall_s": 413.8,
+      "lr": 0.0014261528799864196
+    },
+    {
+      "progress": 0.4502,
+      "trained_tokens": 5402752,
+      "step": 663,
+      "train_ce": 2.8421,
+      "stories_val": 2.5619,
+      "childes_val": 3.692,
+      "wall_s": 449.9,
+      "lr": 0.0012874170341126612
+    },
+    {
+      "progress": 0.5001,
+      "trained_tokens": 6000768,
+      "step": 736,
+      "train_ce": 2.9923,
+      "stories_val": 2.4988,
+      "childes_val": 3.6874,
+      "wall_s": 486.7,
+      "lr": 0.0011435196667614006
+    },
+    {
+      "progress": 0.5506,
+      "trained_tokens": 6606976,
+      "step": 810,
+      "train_ce": 2.8406,
+      "stories_val": 2.4266,
+      "childes_val": 3.6599,
+      "wall_s": 523.4,
+      "lr": 0.0009965140964276866
+    },
+    {
+      "progress": 0.6004,
+      "trained_tokens": 7204992,
+      "step": 883,
+      "train_ce": 2.7541,
+      "stories_val": 2.3826,
+      "childes_val": 3.6482,
+      "wall_s": 560.1,
+      "lr": 0.0008541862271552083
+    },
+    {
+      "progress": 0.6503,
+      "trained_tokens": 7762048,
+      "step": 951,
+      "train_ce": 2.5972,
+      "stories_val": 2.3488,
+      "childes_val": 3.6543,
+      "wall_s": 616.0,
+      "lr": 0.0007182480891557074
+    },
+    {
+      "progress": 0.7004,
+      "trained_tokens": 8343680,
+      "step": 1022,
+      "train_ce": 2.699,
+      "stories_val": 2.3239,
+      "childes_val": 3.6159,
+      "wall_s": 661.3,
+      "lr": 0.0005914121203000897
+    },
+    {
+      "progress": 0.7506,
+      "trained_tokens": 8925312,
+      "step": 1093,
+      "train_ce": 2.6913,
+      "stories_val": 2.2873,
+      "childes_val": 3.5938,
+      "wall_s": 706.4,
+      "lr": 0.0004779778047975244
+    },
+    {
+      "progress": 0.8001,
+      "trained_tokens": 9498752,
+      "step": 1163,
+      "train_ce": 2.5892,
+      "stories_val": 2.2679,
+      "childes_val": 3.5826,
+      "wall_s": 751.5,
+      "lr": 0.00038213265822409636
+    },
+    {
+      "progress": 0.8503,
+      "trained_tokens": 10080384,
+      "step": 1234,
+      "train_ce": 2.4534,
+      "stories_val": 2.2441,
+      "childes_val": 3.5697,
+      "wall_s": 796.6,
+      "lr": 0.00030376416483647887
+    },
+    {
+      "progress": 0.9003,
+      "trained_tokens": 10530944,
+      "step": 1289,
+      "train_ce": 2.5646,
+      "stories_val": 2.2309,
+      "childes_val": 3.5345,
+      "wall_s": 839.3,
+      "lr": 0.0002464822000517775
+    },
+    {
+      "progress": 0.9504,
+      "trained_tokens": 10981504,
+      "step": 1344,
+      "train_ce": 2.569,
+      "stories_val": 2.2213,
+      "childes_val": 3.5266,
+      "wall_s": 882.1,
+      "lr": 0.00021158937786282193
+    }
+  ],
+  "phases": [
+    {
+      "name": "1-listen: child-directed speech, age-ordered, context 64",
+      "start_progress": 0.0,
+      "wall_s": 0.0002624988555908203
+    },
+    {
+      "name": "2-listen: stories simple->complex, context 128->256",
+      "start_progress": 0.15018666666666666,
+      "wall_s": 105.3019814491272
+    },
+    {
+      "name": "3-babble: talk, get caregiver feedback, learn from praise and recasts",
+      "start_progress": 0.600416,
+      "wall_s": 560.2140250205994
+    },
+    {
+      "name": "4-sleep: consolidate by distilling from the EMA (memory) model",
+      "start_progress": 0.850272,
+      "wall_s": 796.668142080307
+    }
+  ],
+  "babble": [
+    {
+      "round": 0,
+      "fluency": -3.6274787170257508,
+      "disc_log_p_real": -0.7444342374801636,
+      "repetition": 0.009550261866061192,
+      "ended": 0.3798828125,
+      "disc_acc_train": 0.7978515625,
+      "best": "do it some more? i have another one.",
+      "worst": "it was a very interesting dream.",
+      "worst_recast": "what about a circle dream? what about a dream dream? what about a dream dream dream? did you have a bad dream. sometimes bad dreams are scary in the middle of the night hm."
+    },
+    {
+      "round": 1,
+      "fluency": -3.6003299807650784,
+      "disc_log_p_real": -0.7793399691581726,
+      "repetition": 0.008632702115064448,
+      "ended": 0.458984375,
+      "disc_acc_train": 0.78955078125,
+      "best": "we're pretty sure santa claus.",
+      "worst": "that's the only thing?",
+      "worst_recast": "what's that big thing? what's that big thing? aha. what's he doing? he's waiting for the bus what does he have in his hand?"
+    },
+    {
+      "round": 2,
+      "fluency": -3.682615786193523,
+      "disc_log_p_real": -0.7865091562271118,
+      "repetition": 0.009657163190995,
+      "ended": 0.4677734375,
+      "disc_acc_train": 0.79296875,
+      "best": "yeah there's a cow. who's that?",
+      "worst": "a pentagon.",
+      "worst_recast": "oh. yeah? what's under the pentagon? a house is under the pentagon? a pentagon has five sides."
+    },
+    {
+      "round": 3,
+      "fluency": -3.5167469168308028,
+      "disc_log_p_real": -0.7560352087020874,
+      "repetition": 0.0105489170224189,
+      "ended": 0.4599609375,
+      "disc_acc_train": 0.79638671875,
+      "best": "the little girl sat in her chair with a big smile on her face.",
+      "worst": "blow real hard ah?",
+      "worst_recast": "clonk. ah. is that what you're doing. ah? ah."
+    },
+    {
+      "round": 4,
+      "fluency": -3.5779511530746695,
+      "disc_log_p_real": -0.7654866576194763,
+      "repetition": 0.011192027601367772,
+      "ended": 0.439453125,
+      "disc_acc_train": 0.78857421875,
+      "best": "erin's going to go on an adventure.",
+      "worst": "mama and daddy took a photo of jim.",
+      "worst_recast": "mama and daddy took a photo of jim. he was swimming in the pool. he felt happy and smiled. but then jim made a stupid mistake. he swam too far and couldn't get back. mama and daddy were worried, but they found jim and they all laughed. mama took another photo with jim in"
+    },
+    {
+      "round": 5,
+      "fluency": -3.5464786440547997,
+      "disc_log_p_real": -0.7683607935905457,
+      "repetition": 0.012291810377793751,
+      "ended": 0.4521484375,
+      "disc_acc_train": 0.80810546875,
+      "best": "it went fast it went slow and slid down.",
+      "worst": "okay. joseph would you like?",
+      "worst_recast": "okay. oh joseph joseph joseph joseph joseph. that's two outfits tonight that you ruined. huh. two outfits that you've spit up on."
+    }
+  ],
+  "diary": [
+    {
+      "phase": "1-listen",
+      "samples": [
+        "look at the door in there. the park in the road. oh? yeah.",
+        "once upon a time, there was a little and there's the same. the what's the same for nathaniel?",
+        "what do you want to put it on the bathroom that's a bad boy. yeah. okay."
+      ]
+    },
+    {
+      "phase": "2-listen",
+      "samples": [
+        "look at the sky. there was the sky in the air. timmy wanted to see it, but he didn't know how. he looked in the sky and saw a beautiful flower. he climbed up the flower and",
+        "once upon a time, there was a little girl called jane. she was only three years old and loved to explore the world around him. one day, jane was on an adventure and she was excited to explore the forest. suddenly, she noticed",
+        "what do you want to get?"
+      ]
+    },
+    {
+      "phase": "3-babble",
+      "samples": [
+        "look at the sky. there it is. he is looking at it?",
+        "once upon a time, there was a little boy named timmy. timmy loved to play outside with his friends in the park. one day, timmy's friend's friend said, \"i want to play with you, timmy.\" timmy replied, \"",
+        "what do you want to do? are you getting up on mommy's bed."
+      ]
+    },
+    {
+      "phase": "4-sleep",
+      "samples": [
+        "look at the sky. there it is. he is looking at it?",
+        "once upon a time, there was a little girl named lily. she loved to play outside with her friends. one day, she found a big box in the park. it was very big and had many colors. lily started to fight over the",
+        "what do you want to do with that? a good idea. well we can do that."
+      ]
+    }
+  ],
+  "summary": {
+    "trained_tokens": 11432064,
+    "forward_only_tokens": 1720320,
+    "units": 36016512.0,
+    "steps": 1399,
+    "wall_s": 925.4197878837585,
+    "params": 3443136
+  }
+}

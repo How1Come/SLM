@@ -1,0 +1,64 @@
+/workspace/slm/caregiver.py:126: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:848.)
+  return torch.sparse_coo_tensor(torch.tensor([rows, cols]), vals, (len(seqs), self.V)).coalesce()
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1-listen: child-directed speech, age-ordered, context 64 (progress 0.0%)
+  [  0.1%] step     1 train 8.348 | val stories 8.353 (ppl 4244.15) childes 8.352 | 2s
+  [  5.1%] step    74 train 4.474 | val stories 5.095 (ppl 163.20) childes 4.487 | 43s
+  [ 10.0%] step   147 train 4.074 | val stories 4.729 (ppl 113.17) childes 4.097 | 87s
+  [ 15.0%] step   220 train 3.815 | val stories 4.535 (ppl  93.25) childes 3.944 | 127s
+    > look at the other kids and. the park in the road. oh?
+    > once upon a time, there was a little boy named and there was it.
+    > what do you want to the cow?
+[phase] 2-listen: stories simple->complex, context 128->256 (progress 15.0%)
+  [ 20.0%] step   293 train 3.463 | val stories 3.284 (ppl  26.70) childes 3.897 | 167s
+  [ 25.1%] step   367 train 3.345 | val stories 3.035 (ppl  20.80) childes 3.829 | 209s
+  [ 30.0%] step   440 train 3.192 | val stories 2.899 (ppl  18.16) childes 3.750 | 250s
+  [ 35.0%] step   514 train 3.117 | val stories 2.748 (ppl  15.60) childes 3.732 | 293s
+  [ 40.1%] step   589 train 2.922 | val stories 2.650 (ppl  14.15) childes 3.697 | 336s
+  [ 45.0%] step   663 train 2.819 | val stories 2.530 (ppl  12.55) childes 3.660 | 379s
+  [ 50.0%] step   736 train 2.943 | val stories 2.478 (ppl  11.92) childes 3.659 | 425s
+  [ 55.1%] step   810 train 2.795 | val stories 2.402 (ppl  11.04) childes 3.634 | 472s
+  [ 60.0%] step   883 train 2.726 | val stories 2.351 (ppl  10.49) childes 3.612 | 515s
+    > look at the other in there. the one in the air and saw a big butterfly. the butterfly was scared and cried the sound. the butterfly flew away and the butterfly flew away. the butterfly flew away, and
+    > once upon a time, there was a little girl called jane. she was only three years old and she was always looking for a great time. every day, jane came to the field with her hand and the field was filled with sunshine. she
+    > what do you want to get?
+[phase] 3-babble: talk, get caregiver feedback, learn from praise and recasts (progress 60.0%)
+  [babble 0] fluency -3.60 rep 0.013 ended 0.35 disc-acc 0.77
+    best : i'm gonna be putting the toy right away.
+    worst: right right exactly.
+    recast: right? just like that. exactly. mhm. maybe you don't wanna hold it.
+  [babble 1] fluency -3.61 rep 0.011 ended 0.42 disc-acc 0.82
+    best : nothing i'm just watching from then on.
+    worst: that's the only thing?
+    recast: what's that big thing? what's that big thing? aha. what's he doing? he's waiting for the bus what does he have in his ha
+  [ 65.0%] step   951 train 2.562 | val stories 2.323 (ppl  10.20) childes 3.621 | 570s
+  [babble 2] fluency -3.60 rep 0.012 ended 0.43 disc-acc 0.76
+    best : yeah there's a cow. who's that?
+    worst: run over your what?
+    recast: da da da. nununununun. i'm almost done getting it ready sweetie. can you lift this big spoon? there you go!
+  [ 70.0%] step  1022 train 2.665 | val stories 2.304 (ppl  10.01) childes 3.590 | 618s
+  [babble 3] fluency -3.57 rep 0.010 ended 0.42 disc-acc 0.80
+    best : are you going to sweep his armchair.
+    worst: yeah she's a doctor.
+    recast: yeah she's a doctor. well no mommy's not a doctor. nancy's a doctor? right and do you know who else is a doctor. tamar's
+  [ 75.1%] step  1093 train 2.609 | val stories 2.265 (ppl   9.63) childes 3.578 | 662s
+  [babble 4] fluency -3.55 rep 0.015 ended 0.40 disc-acc 0.78
+    best : yeah? dya see let's see.
+    worst: he did not break it?
+    recast: he did not break it? he said he was not there. he says i was at my own house i did not break it. he did not break it. wh
+  [ 80.0%] step  1163 train 2.576 | val stories 2.242 (ppl   9.41) childes 3.552 | 707s
+  [babble 5] fluency -3.51 rep 0.014 ended 0.45 disc-acc 0.80
+    best : once there was a boy named tom. tom was a 3-year-old boy.
+    worst: okay. joseph would you like?
+    recast: okay. oh joseph joseph joseph joseph joseph. that's two outfits tonight that you ruined. huh. two outfits that you've sp
+  [ 85.0%] step  1234 train 2.405 | val stories 2.223 (ppl   9.23) childes 3.545 | 750s
+    > look at the big truck and saw the fire truck in the fire truck? it was in the truck and there were cars in the garage! they were so many cars and cars and the truck that they were having many
+    > once upon a time, there was a little girl called anna. she loved to explore and explore the world around her. one day, she saw a butterfly flying over the butterfly. she wanted to catch it, but the butterfly said it was too
+    > what do you want to get?
+[phase] 4-sleep: consolidate by distilling from the EMA (memory) model (progress 85.0%)
+  [ 90.0%] step  1289 train 2.528 | val stories 2.206 (ppl   9.08) childes 3.520 | 797s
+  [ 95.0%] step  1344 train 2.524 | val stories 2.197 (ppl   9.00) childes 3.511 | 844s
+    > look at the big red ball. the purple ball is looking at it. it is not very fun. it is still the toy too!
+    > once upon a time, there was a little girl named lily. she loved to play outside in the sun. one day, she saw a little bird on a tree. she wanted to do it, so she picked it up and said, "
+    > what do you want to eat?
+[done] saved runs/cradle-s0 | {"trained_tokens": 11432064, "forward_only_tokens": 1720320, "units": 36016512.0, "steps": 1399, "wall_s": 891.0357360839844, "params": 3443136}

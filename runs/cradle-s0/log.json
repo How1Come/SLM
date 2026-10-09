@@ -1,0 +1,367 @@
+{
+  "args": {
+    "recipe": "cradle",
+    "budget_tokens": 12000000.0,
+    "seed": 0,
+    "batch_tokens": 8192,
+    "lr": 0.002,
+    "warmup": 0.03,
+    "d_model": 192,
+    "n_layer": 6,
+    "n_head": 6,
+    "out": "runs",
+    "name": "cradle-s0",
+    "phases": [
+      0.15,
+      0.45,
+      0.25,
+      0.15
+    ],
+    "prior_alpha": 0.3,
+    "use_prior": true,
+    "use_curriculum": true,
+    "use_babble": true,
+    "use_sleep": true,
+    "babble_rounds": 6,
+    "babble_per_round": 1024,
+    "feedback_frac": 0.2,
+    "sleep_beta": 0.5,
+    "ema_decay": 0.998,
+    "eval_every": 0.05,
+    "extra": {}
+  },
+  "curve": [
+    {
+      "progress": 0.0007,
+      "trained_tokens": 8192,
+      "step": 1,
+      "train_ce": 8.3483,
+      "stories_val": 8.3533,
+      "childes_val": 8.3522,
+      "wall_s": 1.5,
+      "lr": 4.551111111111112e-05
+    },
+    {
+      "progress": 0.0505,
+      "trained_tokens": 606208,
+      "step": 74,
+      "train_ce": 4.4736,
+      "stories_val": 5.095,
+      "childes_val": 4.4873,
+      "wall_s": 43.2,
+      "lr": 0.001998013672733423
+    },
+    {
+      "progress": 0.1004,
+      "trained_tokens": 1204224,
+      "step": 147,
+      "train_ce": 4.0741,
+      "stories_val": 4.7289,
+      "childes_val": 4.0975,
+      "wall_s": 86.9,
+      "lr": 0.0019767382739648847
+    },
+    {
+      "progress": 0.1502,
+      "trained_tokens": 1802240,
+      "step": 220,
+      "train_ce": 3.8154,
+      "stories_val": 4.5353,
+      "childes_val": 3.9435,
+      "wall_s": 127.1,
+      "lr": 0.0019326727690825308
+    },
+    {
+      "progress": 0.2,
+      "trained_tokens": 2400256,
+      "step": 293,
+      "train_ce": 3.4627,
+      "stories_val": 3.2845,
+      "childes_val": 3.8972,
+      "wall_s": 167.3,
+      "lr": 0.0018669626054359863
+    },
+    {
+      "progress": 0.2505,
+      "trained_tokens": 3006464,
+      "step": 367,
+      "train_ce": 3.3446,
+      "stories_val": 3.0349,
+      "childes_val": 3.8286,
+      "wall_s": 208.8,
+      "lr": 0.0017800140177159523
+    },
+    {
+      "progress": 0.3004,
+      "trained_tokens": 3604480,
+      "step": 440,
+      "train_ce": 3.192,
+      "stories_val": 2.8995,
+      "childes_val": 3.7501,
+      "wall_s": 249.6,
+      "lr": 0.0016764320923772173
+    },
+    {
+      "progress": 0.3501,
+      "trained_tokens": 4201216,
+      "step": 514,
+      "train_ce": 3.1167,
+      "stories_val": 2.7475,
+      "childes_val": 3.7325,
+      "wall_s": 293.4,
+      "lr": 0.0015581339288916868
+    },
+    {
+      "progress": 0.4005,
+      "trained_tokens": 4806016,
+      "step": 589,
+      "train_ce": 2.9224,
+      "stories_val": 2.6498,
+      "childes_val": 3.6969,
+      "wall_s": 336.1,
+      "lr": 0.0014261528799864196
+    },
+    {
+      "progress": 0.4502,
+      "trained_tokens": 5402752,
+      "step": 663,
+      "train_ce": 2.8191,
+      "stories_val": 2.5296,
+      "childes_val": 3.6599,
+      "wall_s": 378.8,
+      "lr": 0.0012874170341126612
+    },
+    {
+      "progress": 0.5001,
+      "trained_tokens": 6000768,
+      "step": 736,
+      "train_ce": 2.9428,
+      "stories_val": 2.4785,
+      "childes_val": 3.6588,
+      "wall_s": 425.3,
+      "lr": 0.0011435196667614006
+    },
+    {
+      "progress": 0.5506,
+      "trained_tokens": 6606976,
+      "step": 810,
+      "train_ce": 2.7955,
+      "stories_val": 2.4019,
+      "childes_val": 3.6343,
+      "wall_s": 472.2,
+      "lr": 0.0009965140964276866
+    },
+    {
+      "progress": 0.6004,
+      "trained_tokens": 7204992,
+      "step": 883,
+      "train_ce": 2.7257,
+      "stories_val": 2.3506,
+      "childes_val": 3.6124,
+      "wall_s": 514.8,
+      "lr": 0.0008541862271552083
+    },
+    {
+      "progress": 0.6503,
+      "trained_tokens": 7762048,
+      "step": 951,
+      "train_ce": 2.5617,
+      "stories_val": 2.3227,
+      "childes_val": 3.6207,
+      "wall_s": 570.2,
+      "lr": 0.0007182480891557074
+    },
+    {
+      "progress": 0.7004,
+      "trained_tokens": 8343680,
+      "step": 1022,
+      "train_ce": 2.6646,
+      "stories_val": 2.304,
+      "childes_val": 3.5897,
+      "wall_s": 617.5,
+      "lr": 0.0005914121203000897
+    },
+    {
+      "progress": 0.7506,
+      "trained_tokens": 8925312,
+      "step": 1093,
+      "train_ce": 2.6093,
+      "stories_val": 2.2648,
+      "childes_val": 3.5785,
+      "wall_s": 662.0,
+      "lr": 0.0004779778047975244
+    },
+    {
+      "progress": 0.8001,
+      "trained_tokens": 9498752,
+      "step": 1163,
+      "train_ce": 2.5758,
+      "stories_val": 2.2419,
+      "childes_val": 3.5522,
+      "wall_s": 707.0,
+      "lr": 0.00038213265822409636
+    },
+    {
+      "progress": 0.8503,
+      "trained_tokens": 10080384,
+      "step": 1234,
+      "train_ce": 2.4047,
+      "stories_val": 2.223,
+      "childes_val": 3.545,
+      "wall_s": 750.4,
+      "lr": 0.00030376416483647887
+    },
+    {
+      "progress": 0.9003,
+      "trained_tokens": 10530944,
+      "step": 1289,
+      "train_ce": 2.5277,
+      "stories_val": 2.2059,
+      "childes_val": 3.5204,
+      "wall_s": 797.1,
+      "lr": 0.0002464822000517775
+    },
+    {
+      "progress": 0.9504,
+      "trained_tokens": 10981504,
+      "step": 1344,
+      "train_ce": 2.5241,
+      "stories_val": 2.1972,
+      "childes_val": 3.5106,
+      "wall_s": 843.9,
+      "lr": 0.00021158937786282193
+    }
+  ],
+  "phases": [
+    {
+      "name": "1-listen: child-directed speech, age-ordered, context 64",
+      "start_progress": 0.0,
+      "wall_s": 0.43631792068481445
+    },
+    {
+      "name": "2-listen: stories simple->complex, context 128->256",
+      "start_progress": 0.15018666666666666,
+      "wall_s": 127.17734432220459
+    },
+    {
+      "name": "3-babble: talk, get caregiver feedback, learn from praise and recasts",
+      "start_progress": 0.600416,
+      "wall_s": 514.9190411567688
+    },
+    {
+      "name": "4-sleep: consolidate by distilling from the EMA (memory) model",
+      "start_progress": 0.850272,
+      "wall_s": 750.5493860244751
+    }
+  ],
+  "babble": [
+    {
+      "round": 0,
+      "fluency": -3.5953501513876303,
+      "disc_log_p_real": -0.7483897805213928,
+      "repetition": 0.013271080025239518,
+      "ended": 0.34765625,
+      "disc_acc_train": 0.77294921875,
+      "best": "i'm gonna be putting the toy right away.",
+      "worst": "right right exactly.",
+      "worst_recast": "right? just like that. exactly. mhm. maybe you don't wanna hold it."
+    },
+    {
+      "round": 1,
+      "fluency": -3.6135801709666717,
+      "disc_log_p_real": -0.7641509771347046,
+      "repetition": 0.01076529665734009,
+      "ended": 0.416015625,
+      "disc_acc_train": 0.818359375,
+      "best": "nothing i'm just watching from then on.",
+      "worst": "that's the only thing?",
+      "worst_recast": "what's that big thing? what's that big thing? aha. what's he doing? he's waiting for the bus what does he have in his hand?"
+    },
+    {
+      "round": 2,
+      "fluency": -3.5951523120338473,
+      "disc_log_p_real": -0.7787234783172607,
+      "repetition": 0.01200747046622877,
+      "ended": 0.4296875,
+      "disc_acc_train": 0.75927734375,
+      "best": "yeah there's a cow. who's that?",
+      "worst": "run over your what?",
+      "worst_recast": "da da da. nununununun. i'm almost done getting it ready sweetie. can you lift this big spoon? there you go!"
+    },
+    {
+      "round": 3,
+      "fluency": -3.569540572672266,
+      "disc_log_p_real": -0.759560763835907,
+      "repetition": 0.010499053580265642,
+      "ended": 0.4228515625,
+      "disc_acc_train": 0.7958984375,
+      "best": "are you going to sweep his armchair.",
+      "worst": "yeah she's a doctor.",
+      "worst_recast": "yeah she's a doctor. well no mommy's not a doctor. nancy's a doctor? right and do you know who else is a doctor. tamar's mommy and tamar's daddy are both doctors."
+    },
+    {
+      "round": 4,
+      "fluency": -3.5517925086735764,
+      "disc_log_p_real": -0.7566499710083008,
+      "repetition": 0.014680904847378705,
+      "ended": 0.3984375,
+      "disc_acc_train": 0.7822265625,
+      "best": "yeah? dya see let's see.",
+      "worst": "he did not break it?",
+      "worst_recast": "he did not break it? he said he was not there. he says i was at my own house i did not break it. he did not break it. what do you want to play with should we play with the animals or do you wanna play like we're at the store?"
+    },
+    {
+      "round": 5,
+      "fluency": -3.512493945581541,
+      "disc_log_p_real": -0.7622854709625244,
+      "repetition": 0.013902454999521937,
+      "ended": 0.453125,
+      "disc_acc_train": 0.7958984375,
+      "best": "once there was a boy named tom. tom was a 3-year-old boy.",
+      "worst": "okay. joseph would you like?",
+      "worst_recast": "okay. oh joseph joseph joseph joseph joseph. that's two outfits tonight that you ruined. huh. two outfits that you've spit up on."
+    }
+  ],
+  "diary": [
+    {
+      "phase": "1-listen",
+      "samples": [
+        "look at the other kids and. the park in the road. oh?",
+        "once upon a time, there was a little boy named and there was it.",
+        "what do you want to the cow?"
+      ]
+    },
+    {
+      "phase": "2-listen",
+      "samples": [
+        "look at the other in there. the one in the air and saw a big butterfly. the butterfly was scared and cried the sound. the butterfly flew away and the butterfly flew away. the butterfly flew away, and",
+        "once upon a time, there was a little girl called jane. she was only three years old and she was always looking for a great time. every day, jane came to the field with her hand and the field was filled with sunshine. she",
+        "what do you want to get?"
+      ]
+    },
+    {
+      "phase": "3-babble",
+      "samples": [
+        "look at the big truck and saw the fire truck in the fire truck? it was in the truck and there were cars in the garage! they were so many cars and cars and the truck that they were having many",
+        "once upon a time, there was a little girl called anna. she loved to explore and explore the world around her. one day, she saw a butterfly flying over the butterfly. she wanted to catch it, but the butterfly said it was too",
+        "what do you want to get?"
+      ]
+    },
+    {
+      "phase": "4-sleep",
+      "samples": [
+        "look at the big red ball. the purple ball is looking at it. it is not very fun. it is still the toy too!",
+        "once upon a time, there was a little girl named lily. she loved to play outside in the sun. one day, she saw a little bird on a tree. she wanted to do it, so she picked it up and said, \"",
+        "what do you want to eat?"
+      ]
+    }
+  ],
+  "summary": {
+    "trained_tokens": 11432064,
+    "forward_only_tokens": 1720320,
+    "units": 36016512.0,
+    "steps": 1399,
+    "wall_s": 891.0357360839844,
+    "params": 3443136
+  }
+}

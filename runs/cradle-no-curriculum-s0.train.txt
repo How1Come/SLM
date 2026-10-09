@@ -1,0 +1,57 @@
+/workspace/slm/caregiver.py:126: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:848.)
+  return torch.sparse_coo_tensor(torch.tensor([rows, cols]), vals, (len(seqs), self.V)).coalesce()
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1+2 (ablated): shuffled next-token prediction (progress 0.0%)
+  [  0.1%] step     1 train 8.356 | val stories 8.353 (ppl 4244.15) childes 8.352 | 2s
+  [  5.1%] step    74 train 4.411 | val stories 3.976 (ppl  53.31) childes 4.906 | 46s
+  [ 10.0%] step   147 train 3.873 | val stories 3.470 (ppl  32.13) childes 4.540 | 90s
+  [ 15.0%] step   220 train 3.640 | val stories 3.210 (ppl  24.79) childes 4.332 | 135s
+  [ 20.0%] step   293 train 3.617 | val stories 3.072 (ppl  21.59) childes 4.218 | 179s
+  [ 25.1%] step   367 train 3.184 | val stories 2.905 (ppl  18.27) childes 4.116 | 222s
+  [ 30.0%] step   440 train 3.393 | val stories 2.793 (ppl  16.32) childes 4.058 | 265s
+  [ 35.0%] step   513 train 3.131 | val stories 2.705 (ppl  14.95) childes 3.976 | 306s
+  [ 40.0%] step   586 train 2.991 | val stories 2.614 (ppl  13.65) childes 3.926 | 352s
+  [ 45.1%] step   660 train 3.004 | val stories 2.532 (ppl  12.57) childes 3.866 | 394s
+  [ 50.0%] step   733 train 2.838 | val stories 2.466 (ppl  11.77) childes 3.825 | 438s
+  [ 55.0%] step   806 train 2.887 | val stories 2.419 (ppl  11.23) childes 3.771 | 483s
+  [ 60.0%] step   879 train 3.001 | val stories 2.368 (ppl  10.67) childes 3.752 | 528s
+[phase] 3-babble: talk, get caregiver feedback, learn from praise and recasts (progress 60.0%)
+  [babble 0] fluency -3.66 rep 0.009 ended 0.36 disc-acc 0.77
+    best : slap me low. i didn't want to take a nap.
+    worst: where are they flying to?
+    recast: where are they? where are they? where are you pants? that sounds very silly to me. okay let see.
+  [babble 1] fluency -3.55 rep 0.011 ended 0.41 disc-acc 0.81
+    best : and um so she's oink oink!
+    worst: we have all different kinds.
+    recast: that's a kitty cat. mhm. that's dingo in his car! those are all different kinds of tails! what's that?
+  [ 65.1%] step   948 train 2.473 | val stories 2.352 (ppl  10.51) childes 3.741 | 585s
+  [babble 2] fluency -3.67 rep 0.010 ended 0.43 disc-acc 0.77
+    best : you funny bunny uh oh no i didn't like that?
+    worst: tim and sue were friends who liked to travel.
+    recast: tim and sue were friends who liked to travel. they had a big map on the wall and they put stickers on the places they wa
+  [ 70.0%] step  1018 train 2.693 | val stories 2.318 (ppl  10.16) childes 3.700 | 631s
+  [babble 3] fluency -3.53 rep 0.009 ended 0.41 disc-acc 0.78
+    best : what's he doing there? we don't know what it was?
+    worst: more on your other arm.
+    recast: more? mm. can i have some coffee too? here. thank you.
+  [ 75.0%] step  1089 train 2.641 | val stories 2.281 (ppl   9.79) childes 3.682 | 676s
+  [babble 4] fluency -3.49 rep 0.011 ended 0.37 disc-acc 0.78
+    best : listen we have to get in trouble.
+    worst: yeah. lily says yes.
+    recast: yes it does. yes it does. yes. yes. yes.
+  [ 80.0%] step  1160 train 2.596 | val stories 2.261 (ppl   9.59) childes 3.653 | 720s
+  [babble 5] fluency -3.52 rep 0.009 ended 0.43 disc-acc 0.79
+    best : excellent. yes but you can't do it.
+    worst: fabian on the window
+    recast: ababa. ababababa. dababa. ah. oh the feeding is tiring huh?
+  [ 85.1%] step  1231 train 2.428 | val stories 2.237 (ppl   9.37) childes 3.637 | 766s
+    > look at the blue square and said, "look at my purple square with a butterfly!" lily was scared, but she did not know what to do. she asked her mom, "why are you sad?" her
+    > once upon a time, there was a little girl called jane. jane loved to play outside in the garden. one day, she found a big tree. she said, "mommy, can i open the tree?" the tree said, "no
+    > what do you want to get to go? what are you going to do with?
+[phase] 4-sleep: consolidate by distilling from the EMA (memory) model (progress 85.1%)
+  [ 90.1%] step  1286 train 2.607 | val stories 2.254 (ppl   9.53) childes 3.643 | 813s
+  [ 95.1%] step  1341 train 2.623 | val stories 2.243 (ppl   9.42) childes 3.634 | 860s
+    > look at the sky. there was the best land in the park! it was so much fun. one day, a little girl named lucy wanted to join in the park. she asked her mom if she could go
+    > once upon a time, there was a little girl called jane. jane loved to play outside in the garden with her toys. every day she would run around the garden, admire the world and see the trees. one day, she was sitting
+    > what do you want to get?
+[done] saved runs/cradle-no-curriculum-s0 | {"trained_tokens": 11436032, "forward_only_tokens": 1720320, "units": 36028416.0, "steps": 1396, "wall_s": 905.694164276123, "params": 3443136}

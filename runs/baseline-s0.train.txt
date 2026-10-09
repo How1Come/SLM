@@ -1,0 +1,26 @@
+/workspace/slm/train.py:140: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  self.record(float(ce))
+[train] recipe=baseline params=3.44M budget=12.0M tokens
+[phase] baseline: shuffled next-token prediction (progress 0.0%)
+  [  0.1%] step     1 train 8.356 | val stories 8.353 (ppl 4244.15) childes 8.352 | 1s
+  [  5.1%] step    74 train 4.472 | val stories 4.026 (ppl  56.03) childes 4.934 | 45s
+  [ 10.0%] step   147 train 3.892 | val stories 3.476 (ppl  32.34) childes 4.576 | 87s
+  [ 15.0%] step   220 train 3.650 | val stories 3.202 (ppl  24.59) childes 4.356 | 132s
+  [ 20.0%] step   293 train 3.629 | val stories 3.059 (ppl  21.30) childes 4.235 | 174s
+  [ 25.1%] step   367 train 3.178 | val stories 2.898 (ppl  18.14) childes 4.168 | 228s
+  [ 30.0%] step   440 train 3.420 | val stories 2.773 (ppl  16.00) childes 4.093 | 270s
+  [ 35.0%] step   513 train 3.126 | val stories 2.687 (ppl  14.68) childes 4.006 | 309s
+  [ 40.0%] step   586 train 2.982 | val stories 2.600 (ppl  13.46) childes 3.961 | 350s
+  [ 45.1%] step   660 train 2.998 | val stories 2.520 (ppl  12.43) childes 3.893 | 390s
+  [ 50.0%] step   733 train 2.846 | val stories 2.467 (ppl  11.79) childes 3.859 | 430s
+  [ 55.0%] step   806 train 2.900 | val stories 2.412 (ppl  11.16) childes 3.816 | 473s
+  [ 60.0%] step   879 train 3.029 | val stories 2.369 (ppl  10.69) childes 3.775 | 516s
+  [ 65.1%] step   953 train 2.730 | val stories 2.328 (ppl  10.26) childes 3.749 | 557s
+  [ 70.0%] step  1026 train 2.662 | val stories 2.291 (ppl   9.89) childes 3.712 | 596s
+  [ 75.0%] step  1099 train 2.614 | val stories 2.258 (ppl   9.57) childes 3.693 | 634s
+  [ 80.0%] step  1172 train 2.590 | val stories 2.227 (ppl   9.27) childes 3.668 | 673s
+  [ 85.1%] step  1246 train 2.691 | val stories 2.209 (ppl   9.10) childes 3.652 | 712s
+  [ 90.0%] step  1319 train 2.506 | val stories 2.196 (ppl   8.98) childes 3.643 | 752s
+  [ 95.0%] step  1392 train 2.512 | val stories 2.183 (ppl   8.87) childes 3.626 | 790s
+[done] saved runs/baseline-s0 | {"trained_tokens": 12001280, "forward_only_tokens": 0, "units": 36003840.0, "steps": 1465, "wall_s": 829.6206617355347, "params": 3443136}

@@ -1,0 +1,64 @@
+/workspace/slm/caregiver.py:126: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:848.)
+  return torch.sparse_coo_tensor(torch.tensor([rows, cols]), vals, (len(seqs), self.V)).coalesce()
+[train] recipe=cradle params=3.44M budget=12.0M tokens
+[phase] 1-listen: child-directed speech, age-ordered, context 64 (progress 0.0%)
+  [  0.1%] step     1 train 8.348 | val stories 8.353 (ppl 4244.15) childes 8.352 | 1s
+  [  5.1%] step    74 train 4.454 | val stories 6.404 (ppl 604.05) childes 4.461 | 36s
+  [ 10.0%] step   147 train 4.042 | val stories 6.231 (ppl 508.37) childes 4.101 | 71s
+  [ 15.0%] step   220 train 3.796 | val stories 6.116 (ppl 453.15) childes 3.943 | 105s
+    > look at the door in there. the park in the road. oh? yeah.
+    > once upon a time, there was a little and there's the same. the what's the same for nathaniel?
+    > what do you want to put it on the bathroom that's a bad boy. yeah. okay.
+[phase] 2-listen: stories simple->complex, context 128->256 (progress 15.0%)
+  [ 20.0%] step   293 train 3.502 | val stories 3.410 (ppl  30.26) childes 3.905 | 141s
+  [ 25.1%] step   367 train 3.358 | val stories 3.104 (ppl  22.29) childes 3.830 | 178s
+  [ 30.0%] step   440 train 3.221 | val stories 2.960 (ppl  19.30) childes 3.750 | 214s
+  [ 35.0%] step   514 train 3.162 | val stories 2.784 (ppl  16.18) childes 3.747 | 295s
+  [ 40.1%] step   589 train 2.938 | val stories 2.687 (ppl  14.69) childes 3.719 | 414s
+  [ 45.0%] step   663 train 2.842 | val stories 2.562 (ppl  12.96) childes 3.692 | 450s
+  [ 50.0%] step   736 train 2.992 | val stories 2.499 (ppl  12.17) childes 3.687 | 487s
+  [ 55.1%] step   810 train 2.841 | val stories 2.427 (ppl  11.32) childes 3.660 | 523s
+  [ 60.0%] step   883 train 2.754 | val stories 2.383 (ppl  10.83) childes 3.648 | 560s
+    > look at the sky. there was the sky in the air. timmy wanted to see it, but he didn't know how. he looked in the sky and saw a beautiful flower. he climbed up the flower and
+    > once upon a time, there was a little girl called jane. she was only three years old and loved to explore the world around him. one day, jane was on an adventure and she was excited to explore the forest. suddenly, she noticed
+    > what do you want to get?
+[phase] 3-babble: talk, get caregiver feedback, learn from praise and recasts (progress 60.0%)
+  [babble 0] fluency -3.63 rep 0.010 ended 0.38 disc-acc 0.80
+    best : do it some more? i have another one.
+    worst: it was a very interesting dream.
+    recast: what about a circle dream? what about a dream dream? what about a dream dream dream? did you have a bad dream. sometimes
+  [babble 1] fluency -3.60 rep 0.009 ended 0.46 disc-acc 0.79
+    best : we're pretty sure santa claus.
+    worst: that's the only thing?
+    recast: what's that big thing? what's that big thing? aha. what's he doing? he's waiting for the bus what does he have in his ha
+  [ 65.0%] step   951 train 2.597 | val stories 2.349 (ppl  10.47) childes 3.654 | 616s
+  [babble 2] fluency -3.68 rep 0.010 ended 0.47 disc-acc 0.79
+    best : yeah there's a cow. who's that?
+    worst: a pentagon.
+    recast: oh. yeah? what's under the pentagon? a house is under the pentagon? a pentagon has five sides.
+  [ 70.0%] step  1022 train 2.699 | val stories 2.324 (ppl  10.22) childes 3.616 | 661s
+  [babble 3] fluency -3.52 rep 0.011 ended 0.46 disc-acc 0.80
+    best : the little girl sat in her chair with a big smile on her face.
+    worst: blow real hard ah?
+    recast: clonk. ah. is that what you're doing. ah? ah.
+  [ 75.1%] step  1093 train 2.691 | val stories 2.287 (ppl   9.85) childes 3.594 | 706s
+  [babble 4] fluency -3.58 rep 0.011 ended 0.44 disc-acc 0.79
+    best : erin's going to go on an adventure.
+    worst: mama and daddy took a photo of jim.
+    recast: mama and daddy took a photo of jim. he was swimming in the pool. he felt happy and smiled. but then jim made a stupid mi
+  [ 80.0%] step  1163 train 2.589 | val stories 2.268 (ppl   9.66) childes 3.583 | 752s
+  [babble 5] fluency -3.55 rep 0.012 ended 0.45 disc-acc 0.81
+    best : it went fast it went slow and slid down.
+    worst: okay. joseph would you like?
+    recast: okay. oh joseph joseph joseph joseph joseph. that's two outfits tonight that you ruined. huh. two outfits that you've sp
+  [ 85.0%] step  1234 train 2.453 | val stories 2.244 (ppl   9.43) childes 3.570 | 797s
+    > look at the sky. there it is. he is looking at it?
+    > once upon a time, there was a little boy named timmy. timmy loved to play outside with his friends in the park. one day, timmy's friend's friend said, "i want to play with you, timmy." timmy replied, "
+    > what do you want to do? are you getting up on mommy's bed.
+[phase] 4-sleep: consolidate by distilling from the EMA (memory) model (progress 85.0%)
+  [ 90.0%] step  1289 train 2.565 | val stories 2.231 (ppl   9.31) childes 3.535 | 839s
+  [ 95.0%] step  1344 train 2.569 | val stories 2.221 (ppl   9.22) childes 3.527 | 882s
+    > look at the sky. there it is. he is looking at it?
+    > once upon a time, there was a little girl named lily. she loved to play outside with her friends. one day, she found a big box in the park. it was very big and had many colors. lily started to fight over the
+    > what do you want to do with that? a good idea. well we can do that.
+[done] saved runs/cradle-no-prior-s0 | {"trained_tokens": 11432064, "forward_only_tokens": 1720320, "units": 36016512.0, "steps": 1399, "wall_s": 925.4197878837585, "params": 3443136}
