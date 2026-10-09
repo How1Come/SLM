@@ -67,6 +67,9 @@ class Args:
     use_curriculum: bool = True
     use_babble: bool = True
     use_sleep: bool = True
+    babble_mode: str = "pooled"
+    cds_mix: float | None = None
+    babble_k: int = 4
     babble_rounds: int = 6
     babble_per_round: int = 1024
     feedback_frac: float = 0.2
@@ -74,6 +77,20 @@ class Args:
     ema_decay: float = 0.998
     eval_every: float = 0.05
     extra: dict = field(default_factory=dict)
+
+
+class MixedPacker:
+    """Fixed share of rows from child-directed speech, the rest from stories (keeps the data mixture constant)."""
+
+    def __init__(self, stories: Packer, cds: Packer, cds_frac: float):
+        self.stories, self.cds, self.frac = stories, cds, cds_frac
+
+    def batch(self, batch_size: int, seq_len: int) -> torch.Tensor:
+        n_cds = int(round(batch_size * self.frac))
+        parts = [self.stories.batch(batch_size - n_cds, seq_len)]
+        if n_cds:
+            parts.append(self.cds.batch(n_cds, seq_len))
+        return torch.cat(parts, 0)
 
 
 class Trainer:
@@ -137,9 +154,9 @@ class Trainer:
                 for pe, pm in zip(self.ema.parameters(), self.model.parameters()):
                     pe.lerp_(pm, 1 - self.args.ema_decay)
         if self.budget.progress >= self.next_eval:
-            self.record(float(ce))
+            self.record(ce.item())
             self.next_eval += self.args.eval_every
-        return float(ce)
+        return ce.item()
 
     def record(self, train_ce: float) -> None:
         sv = eval_loss(self.model, self.data["stories_val"], self.eos, max_windows=48)
@@ -183,8 +200,15 @@ class Trainer:
         print(f"[phase] {name} (progress {self.budget.progress*100:.1f}%)")
 
     # ---------------------------------------------------------------- recipes
-    def replay_packer(self, seed_offset: int = 0) -> Packer:
-        return Packer(self.all_train, self.eos, seed=self.args.seed + seed_offset)
+    def replay_packer(self, seed_offset: int = 0) -> Packer | MixedPacker:
+        seed = self.args.seed + seed_offset
+        if self.args.recipe == "cradle" and self.args.cds_mix is not None:
+            return MixedPacker(
+                Packer(self.data["stories_train"], self.eos, seed=seed),
+                Packer(self.data["childes_train"], self.eos, seed=seed + 1),
+                self.args.cds_mix,
+            )
+        return Packer(self.all_train, self.eos, seed=seed)
 
     def baseline(self) -> None:
         self.phase("baseline: shuffled next-token prediction")
@@ -214,8 +238,11 @@ class Trainer:
             order = np.argsort(self.data["stories_difficulty"])
             stories = self.data["stories_train"]
             for k, seq_len in enumerate((128, 192, 256)):
-                pool = [stories[i] for i in order[: int(len(order) * (k + 1) / 3)]] + cds
-                p = Packer(pool, self.eos, seed=a.seed + 10 + k)
+                pool = [stories[i] for i in order[: int(len(order) * (k + 1) / 3)]]
+                if a.cds_mix is None:
+                    p = Packer(pool + cds, self.eos, seed=a.seed + 10 + k)
+                else:
+                    p = MixedPacker(Packer(pool, self.eos, seed=a.seed + 10 + k), Packer(cds, self.eos, seed=a.seed + 20 + k), a.cds_mix)
                 if k == 1 and a.use_sleep:
                     self.ema = copy.deepcopy(self.model).eval()
                 self.run_until(f1 + f2 * (k + 1) / 3, lambda: p.batch(self.bsz(seq_len), seq_len), alpha_fn=alpha)
@@ -250,12 +277,14 @@ class Trainer:
         ngrams = self.ngrams or NGramStats(self.all_train, self.cfg.vocab_size, self.eos)
         end_ids = {self.tok.token_to_id(t) for t in (".", "!", "?", "Ġ.", "Ġ!", "Ġ?") if self.tok.token_to_id(t) is not None}
         carer = Caregiver(ngrams, self.eos, end_ids)
+        rng = np.random.default_rng(a.seed + 7)
+        fb_rows = max(1, int(round(self.bsz(256) * a.feedback_frac)))
+        if a.babble_mode == "best-of-k":
+            return self.babble_best_of_k(start, end, replay, carer, rng, fb_rows)
         segments = [d[:64] for d in self.data["childes_train"]]
         segments += [d[i : i + 64] for d in self.data["stories_train"] for i in range(0, max(len(d) - 32, 1), 64)]
         recaster = Recaster(segments, self.cfg.vocab_size)
-        rng = np.random.default_rng(a.seed + 7)
         buffer: list[list[list[int]]] = []
-        fb_rows = max(1, int(round(self.bsz(256) * a.feedback_frac)))
         for r in range(a.babble_rounds):
             # Talk: caregiver starts an utterance or a story; the learner continues it.
             items = []
@@ -306,6 +335,73 @@ class Trainer:
 
             self.run_until(round_end, mixed)
 
+    def babble_best_of_k(self, start: float, end: float, replay: Packer, carer: Caregiver, rng, fb_rows: int) -> None:
+        """Per-prompt self-improvement: sample k continuations, praise the best one, and for the prompts the
+        learner handles worst, the caregiver recasts with the true continuation of that same prompt."""
+        a = self.args
+        k = a.babble_k
+        buffer: list[list[list[int]]] = []
+        for r in range(a.babble_rounds):
+            praised, corrected, stats = [], [], []
+            for dom, (pool, plen, gen_len) in {
+                "cds": (self.data["childes_train"], 6, 40),
+                "story": (self.data["stories_train"], 10, 64),
+            }.items():
+                cands = [d for d in pool if len(d) >= plen + gen_len]
+                n_prompts = a.babble_per_round // (2 * k)
+                pick = rng.choice(len(cands), n_prompts, replace=False)
+                prompts = [cands[i][:plen] for i in pick]
+                outs, n_fwd = self.model.generate(
+                    [p for p in prompts for _ in range(k)], max_new_tokens=gen_len, temperature=1.0, top_k=50, stop_ids=(self.eos,)
+                )
+                self.budget.forward(n_fwd)
+                babble = [[t for t in o if t != self.eos] for o in outs]
+                refs = [cands[i][plen : plen + gen_len] for i in pick]
+                group = np.repeat(np.arange(n_prompts), k)
+                fit_half = rng.permutation(n_prompts) < n_prompts // 2
+                scores = np.zeros(len(babble))
+                accs = []
+                for fit_mask in (fit_half, ~fit_half):
+                    carer.disc = type(carer.disc)()
+                    fake = [b for b, g in zip(babble, group) if fit_mask[g]]
+                    accs.append(carer.disc.fit([refs[i] for i in np.where(fit_mask)[0]], fake))
+                    held = np.where(~fit_mask[group])[0]
+                    scores[held], _ = carer.score([babble[i] for i in held])
+                per_prompt = scores.reshape(n_prompts, k)
+                best = per_prompt.argmax(1)
+                best_score = per_prompt.max(1)
+                order = np.argsort(-best_score)
+                q = n_prompts // 4
+                for j in order[: n_prompts // 2]:
+                    praised.append(prompts[j] + babble[j * k + best[j]])
+                for j in order[-q:]:
+                    corrected.append(cands[pick[j]][:256])
+                _, parts = carer.score(babble)
+                j0, j1 = order[0], order[-1]
+                stats.append({
+                    "domain": dom, **parts, "disc_acc_train": float(np.mean(accs)),
+                    "best": self.tok.decode(prompts[j0] + babble[j0 * k + best[j0]]),
+                    "worst": self.tok.decode(prompts[j1] + babble[j1 * k + best[j1]]),
+                    "worst_recast": self.tok.decode(cands[pick[j1]][: plen + gen_len]),
+                })
+            buffer.append(praised + corrected)
+            buffer = buffer[-2:]
+            fb = Packer([x for b in buffer for x in b], self.eos, seed=a.seed + 200 + r)
+            self.log["babble"].append({"round": r, "domains": stats})
+            for s in stats:
+                print(
+                    f"  [babble {r} {s['domain']}] fluency {s['fluency']:.2f} rep {s['repetition']:.3f} ended {s['ended']:.2f}"
+                    f" disc-acc {s['disc_acc_train']:.2f}\n    best : {s['best'][:120]}\n    worst: {s['worst'][:120]}"
+                    f"\n    recast: {s['worst_recast'][:120]}"
+                )
+            round_end = start + (end - start) * (r + 1) / a.babble_rounds
+
+            def mixed():
+                main = replay.batch(self.bsz(256) - fb_rows, 256)
+                return torch.cat([main, fb.batch(fb_rows, 256)], 0)
+
+            self.run_until(round_end, mixed)
+
     def save(self) -> Path:
         name = self.args.name or self.args.recipe
         out = Path(self.args.out) / name
@@ -339,6 +435,13 @@ def main():
     ap.add_argument("--no-curriculum", action="store_true")
     ap.add_argument("--no-babble", action="store_true")
     ap.add_argument("--no-sleep", action="store_true")
+    ap.add_argument("--babble-mode", choices=["pooled", "best-of-k"], default="pooled")
+    ap.add_argument("--cds-mix", type=float, default=None,
+                    help="after phase 1, fixed share of child-directed speech rows per batch (default: natural pooled mix)")
+    ap.add_argument("--feedback-frac", type=float, default=0.2)
+    ap.add_argument("--ema-decay", type=float, default=0.998)
+    ap.add_argument("--sleep-beta", type=float, default=0.5)
+    ap.add_argument("--phases", type=float, nargs=4, default=(0.15, 0.45, 0.25, 0.15), metavar=("LISTEN_CDS", "LISTEN_STORIES", "BABBLE", "SLEEP"))
     ap.add_argument("--threads", type=int, default=0)
     ns = ap.parse_args()
     if ns.threads:
@@ -346,7 +449,8 @@ def main():
     args = Args(
         recipe=ns.recipe, budget_tokens=ns.budget_tokens, seed=ns.seed, name=ns.name, out=ns.out, d_model=ns.d_model,
         n_layer=ns.n_layer, n_head=ns.n_head, lr=ns.lr, use_prior=not ns.no_prior, use_curriculum=not ns.no_curriculum,
-        use_babble=not ns.no_babble, use_sleep=not ns.no_sleep,
+        use_babble=not ns.no_babble, use_sleep=not ns.no_sleep, babble_mode=ns.babble_mode, cds_mix=ns.cds_mix,
+        feedback_frac=ns.feedback_frac, ema_decay=ns.ema_decay, sleep_beta=ns.sleep_beta, phases=tuple(ns.phases),
     )
     t = Trainer(args)
     print(f"[train] recipe={args.recipe} params={t.model.num_params()/1e6:.2f}M budget={args.budget_tokens/1e6:.1f}M tokens")

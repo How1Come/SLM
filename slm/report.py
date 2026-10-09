@@ -23,7 +23,22 @@ def main():
             f"{r['gen_distinct2']:.3f} | {r['gen_repetition3']:.3f} | {s.get('trained_tokens', 0)/1e6:.2f}M | "
             f"{s.get('forward_only_tokens', 0)/1e6:.2f}M | {s.get('wall_s', 0)/60:.1f} |"
         )
-    out = ["# Results", "", *rows, ""]
+    marks = [0.15, 0.3, 0.6, 0.85, 1.0]
+    curve_rows = [
+        "| run | " + " | ".join(f"{int(m*100)}%" for m in marks) + " |",
+        "|---|" + "---|" * len(marks),
+    ]
+    for name in sorted(results):
+        log_path = RUNS / name / "log.json"
+        if not log_path.exists():
+            continue
+        curve = json.loads(log_path.read_text())["curve"]
+        cells = []
+        for m in marks:
+            before = [c for c in curve if c["progress"] <= m + 1e-3]
+            cells.append(f"{before[-1]['stories_val']:.3f}" if before else "-")
+        curve_rows.append(f"| {name} | " + " | ".join(cells) + " |")
+    out = ["# Results", "", *rows, "", "Stories validation loss (48-window subset) vs. share of compute budget:", "", *curve_rows, ""]
     for name, r in sorted(results.items()):
         out += [f"## {name} samples", ""] + [f"- {t}" for t in r["samples"][:3]] + [""]
     (RUNS / "report.md").write_text("\n".join(out))

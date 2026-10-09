@@ -4,3 +4,4 @@ __pycache__/
 data/raw/
 data/prepared.pt
 runs/**/*.pt
+runs-*.txt
