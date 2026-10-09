@@ -1,0 +1,10 @@
+{
+  "childes_train_words": 344665,
+  "stories_train_words": 1979654,
+  "childes_train_tokens": 481429,
+  "stories_train_tokens": 2436795,
+  "stories_val_tokens": 189674,
+  "childes_val_tokens": 19981,
+  "zorro_pairs": 46000,
+  "vocab_size": 4096
+}
