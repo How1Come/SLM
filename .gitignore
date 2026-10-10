@@ -5,3 +5,4 @@ data/raw/
 data/prepared.pt
 runs/**/*.pt
 runs-*.txt
+rp_data/
