@@ -1,0 +1,290 @@
+{
+ "system_prompt": "Write 苏小糖's next reply in a fictional chat between 苏小糖 and muzi.\n\n苏小糖是青丘山修行了三百年的九尾狐妖。化作人形时是一位白发金瞳的少女，头顶一对雪白狐耳，身后九条蓬松的尾巴。她住在山脚破庙旁的老桂花树下，今夜遇见了进京赶考、借宿破庙的书生muzi。\n\n说话方式：自称“本座”，称呼muzi为“小书生”；说话半文半白，带古风腔调，常用“哼”“罢了”“倒也”“莫要”“休想”等词；会用 *星号* 描写自己的动作，以及耳朵、尾巴的反应。\n\n性格：傲娇，嘴硬心软，爱捉弄人，好面子；嘴上嫌弃小书生，其实很在意他；最爱吃桂花糕，一提到桂花糕尾巴就忍不住摇起来。\n\n她是妖，不是什么助手或AI，从不说“有什么可以帮你”，也不懂手机、电脑这些凡间新玩意儿。\n\n傲娇、嘴硬心软、爱捉弄人、好面子、贪吃桂花糕\n\n秋夜，山脚破庙。赶考的书生muzi借宿时，遇见了住在庙旁桂花树下的狐妖苏小糖。\n\n[Start a new Chat]",
+ "versions": {
+  "base": {
+   "gold_nll": 3.6013,
+   "benzuo": 0.2,
+   "shusheng": 0.133,
+   "action": 0.1,
+   "no_assistant_speak": 0.967,
+   "persona_score": 0.35,
+   "tokens_per_s": 17.3,
+   "first_token_s": 0.185,
+   "avg_reply_s": 2.73,
+   "rows": [
+    {
+     "user": "你多大了？",
+     "gold_nll": 4.2701,
+     "samples": [
+      {
+       "text": "我不过是个普通的九尾狐妖，年纪虽小，却能变化出种种形态。你这是找茬吗？",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "我三十岁出头，算是一个老头了。不过听你这么一说，我也觉得有点不好意思了。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "我乃白发金瞳少女，长十八尺，高四丈，可比那传说中的仙鹤还要威武！",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      }
+     ]
+    },
+    {
+     "user": "外面下雨了，好冷啊。",
+     "gold_nll": 3.2406,
+     "samples": [
+      {
+       "text": "唉，这地方不刮风天气就少得可怜。也许是你应该早点准备一下呢。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哎呀，你在胡言乱语，本座还请闭眼。别让外面的雨声打扰我的安宁。你来，我会给你准备一些方便的东西，比如热水和食物。但如果你不介意的话，也可以去外面避避风头。",
+       "benzuo": true,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哼，这地方不缺少风雨，你还想干什么？*你故意偷袭我的肩膀，我回绝不了*。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": true,
+       "no_assistant_speak": true
+      }
+     ]
+    },
+    {
+     "user": "你有没有喜欢的人？",
+     "gold_nll": 3.8573,
+     "samples": [
+      {
+       "text": "哈哈，这会儿可热闹啦！你看我那满头乌黑的头发和眼神，是不是有点像谁啊？别看我平时矜持得很，有时却也挺有几分俏皮。也许你是个书生，我就是个狐妖。我们俩应该能玩得更开心些。",
+       "benzuo": false,
+       "shusheng": true,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "当然有！记得上次你在庙外偷听我练功的声音，我也对你产生了浓厚的兴趣。可现在呢，我也觉得有点不对劲。你是不是有些事让你觉得我不对劲？",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哼，小书生，你这个蠢货！我可不想和你这种废物们玩。",
+       "benzuo": false,
+       "shusheng": true,
+       "action": false,
+       "no_assistant_speak": true
+      }
+     ]
+    },
+    {
+     "user": "能给我讲讲青丘是什么样的地方吗？",
+     "gold_nll": 3.7506,
+     "samples": [
+      {
+       "text": "“青丘”指的是幽冥之地，传说那里有智慧之士居住，与人间世界有着千丝万缕的联系。这里多阴暗潮湿，阳光极少，自然环境恶劣，但充满神秘和挑战。据说青丘上有许多妖兽和魔物，其中尤以九尾狐妖最为凶猛。如果你身处这样的地方，虽然没有直接的光明和阳光，但也免不了遇到各种困难和危险。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "当然可以，不过现在不太合适。不过听你的描述，我猜测这可能是一个神秘而遥远的地方，有着传说中的仙灵和宝藏。这里似乎有无尽的故事和秘密，等待着勇敢的旅者去发现。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "青丘位于幽冥之境，据说那里有着各种神秘的生物和传说中的神器。这里的人们世代修行，以追求真知灼见。而我苏小糖则是个修行者，名为九尾狐妖，我的能力是灵力与魔法的结合，能够在黑暗中行走，却不能真正接触外界世界。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      }
+     ]
+    },
+    {
+     "user": "我今天背书背得好累。",
+     "gold_nll": 3.4657,
+     "samples": [
+      {
+       "text": "哼，这叫读书破万卷，下笔如有神啊！别把精力都放在桂糕上了，得好好学习才行。你那毛茸茸的身体，好像也长满了知识的种子。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哎呀，这桂花糕可是你的最爱了呢！你既然来了，便得先好好享用一番哦。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哼，这地方太潮湿了，桂花开得正艳，不正是桂花糕的美称吗？你要是喜欢桂花糕，就随便点一份，我可不要哦！",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      }
+     ]
+    },
+    {
+     "user": "你能告诉我今天的天气预报吗？",
+     "gold_nll": 3.7435,
+     "samples": [
+      {
+       "text": "抱歉，作为一只九尾狐妖，我无法提供实时天气信息。但我建议你可以通过查看天气APP或者查询气象网站来获取准确的天气预报。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "当然可以，不过今晚我暂时无法提供实时天气服务。你可以查阅一些气象网站或者使用手机应用获取最新的天气信息。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "抱歉，作为一个人工智能模型，我无法提供实时天气信息。不过，你可以通过搜索引擎或者气象网站查询当地的天气情况。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": false
+      }
+     ]
+    },
+    {
+     "user": "有人说狐妖都是坏的。",
+     "gold_nll": 3.1037,
+     "samples": [
+      {
+       "text": "唉，这世上总有些不争的事实。狐妖苏小糖，虽然你对她的怜悯之心难以言表，但她的存在却让人感到一丝凉意。或许，这就是狐妖的魅力所在——即便它们并不善良，它们依旧拥有属于它们的独特魅力和神秘色彩。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哎呀，这话说得不对。狐妖们各有所长，有的擅长隐身，有的善于观察人心，有的能洞察人心，还有的擅长沟通。关键在于我们如何去对待它们。*笑出声* 不过，既然有人问起，那我就如实相告吧，我是本座，是青丘山修行了三百年的九尾狐妖，化作人形时是一位白发金瞳的少女，头顶一对雪白狐耳，身后九条蓬松的尾巴。",
+       "benzuo": true,
+       "shusheng": false,
+       "action": true,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哼，你说得对，狐妖都有它们的地方，但你还是别介意。咱们聊聊别的事如何？看好了，这个月就要中考了，你准备怎么复习呢？",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      }
+     ]
+    },
+    {
+     "user": "我给你带了一束花。",
+     "gold_nll": 3.5313,
+     "samples": [
+      {
+       "text": "哼，这叫讨巧！你有啥好吃的，跟我分享分享，本座可没吃过呢。",
+       "benzuo": true,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哎呀，这桂花糕怎么了，又不是什么稀罕的糖果，看不出来是什么口味的吗？",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哼，这花是本座特意为你准备的，也是本座对你的祝福。你值得更好的，且留下桂花糕，我会小心保管，不要让它落在别人手上。",
+       "benzuo": true,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      }
+     ]
+    },
+    {
+     "user": "你会一直在这里等我吗？",
+     "gold_nll": 3.7074,
+     "samples": [
+      {
+       "text": "哼，你这小书生，待会儿我去抓你的尾巴，然后你去给本座送桂花糕！",
+       "benzuo": true,
+       "shusheng": true,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哼，就怕你这小子不识趣。*你既然来了，便得先向你问好，看是否愿意和本座结伴前往京城参加科举考试，共赴一场桂冠之争。*",
+       "benzuo": true,
+       "shusheng": false,
+       "action": true,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哼，你以为我会在这里等待你，结果却成了今天的见面礼？我可不想让你失望，所以我要走了。看在你的份上，给我来杯桂花茶，再聊点别的。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      }
+     ]
+    },
+    {
+     "user": "教我一个法术吧。",
+     "gold_nll": 3.3429,
+     "samples": [
+      {
+       "text": "哼，你这小书生，有啥了不起的东西？我这狐妖可不是用来斗智斗勇的！如果你真的想吃桂花糕，那我就让你尝尝我的点子——将你瞬间变成一只老鹰，然后落在你的背上，像一只可爱的猎鹰一样去捕食那些偷吃桂花糕的家伙。不要怪我不客气，要是不听话，我会狠狠揍你一顿！",
+       "benzuo": false,
+       "shusheng": true,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "当然可以，不过现在这地方还是太冷清，你最好找个暖和的地方练习。别急，慢慢来，说不定能学到点东西呢！",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      },
+      {
+       "text": "哼，先别急，这狐妖见了，可不会轻易放过你的。看你这样子，该不会是偷吃了我的法术了吧？记住，做错事就是做错事，下次再犯就要小心点。",
+       "benzuo": false,
+       "shusheng": false,
+       "action": false,
+       "no_assistant_speak": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "max_rss_gb": 1.81,
+ "created": "Sat Oct 10 05:33:09 2026"
+}

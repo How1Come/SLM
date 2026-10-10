@@ -188,13 +188,13 @@ def run(args) -> dict:
     for p in params:
         p.data = p.data.float()
     opt = torch.optim.AdamW(params, lr=args.lr, weight_decay=0.0)
-    total = math.ceil(len(examples) * args.epochs / args.accum)
+    total = args.epochs * math.ceil(len(examples) / args.accum)
     warm = max(1, int(0.1 * total))
     sched = torch.optim.lr_scheduler.LambdaLR(
         opt, lambda s: min(1.0, (s + 1) / warm) * 0.5 * (1 + math.cos(math.pi * min(1.0, s / max(1, total)))))
 
     pm.train()
-    step, hist, stopped = 0, [], False
+    step, hist, stopped, skipped = 0, [], False, 0
     for ep in range(args.epochs):
         order = list(range(len(examples)))
         random.shuffle(order)
@@ -217,11 +217,21 @@ def run(args) -> dict:
                 und = -F.logsigmoid(-args.beta * (lp[-1] - e["ref_r"]))
                 loss = loss + args.neg_weight * und
                 parts["neg"] = float(und)
+            if args.debug:
+                log(f"item {idx} {e['kind']} lens {[len(p) + len(r) for p, r in seqs]} {parts}")
+            if not torch.isfinite(loss):
+                skipped += 1
+                continue
             (loss * e["weight"] / args.accum).backward()
             hist.append(parts)
             if (j + 1) % args.accum == 0 or j == len(order) - 1:
-                torch.nn.utils.clip_grad_norm_(params, 1.0)
-                opt.step(); sched.step(); opt.zero_grad()
+                gn = torch.nn.utils.clip_grad_norm_(params, 1.0)
+                if torch.isfinite(gn):
+                    opt.step()
+                else:
+                    skipped += 1
+                    log(f"non-finite gradient (norm {float(gn)}), step skipped")
+                sched.step(); opt.zero_grad()
                 step += 1
             if time.time() - t_start > args.max_minutes * 60:
                 log(f"time budget of {args.max_minutes} min reached, stopping early")
@@ -252,7 +262,7 @@ def run(args) -> dict:
     pm.save_pretrained(out_dir)
     meta = {
         "created": time.time(), "base_model": args.model, "signals": len(signals), "items": len(examples),
-        "kinds": kinds, "epochs_run": ep + 1, "optimizer_steps": step, "lr": args.lr, "rank": args.rank,
+        "kinds": kinds, "epochs_run": ep + 1, "optimizer_steps": step, "skipped_nonfinite": skipped, "lr": args.lr, "rank": args.rank,
         "train_minutes": round((time.time() - t_start) / 60, 2),
         "train_nll_chosen_before": round(sum(a for a, _ in after) / max(1, len(after)), 4),
         "train_nll_chosen_after": round(sum(b for _, b in after) / max(1, len(after)), 4),
@@ -304,6 +314,7 @@ def parser():
     ap.add_argument("--no-activate", action="store_true")
     ap.add_argument("--threads", type=int, default=None)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--debug", action="store_true")
     return ap
 
 

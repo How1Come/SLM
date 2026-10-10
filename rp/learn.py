@@ -143,8 +143,8 @@ class Learner:
                     for s in self.store.find_signals(key, kind="swipe", gen_id=matched["id"]):
                         self.store.update_signal(s["id"], active=0)
                 for g in gens:
-                    if g["id"] == matched["id"] or norm(_full(g)) == norm(_full(matched)):
-                        continue
+                    if g["id"] == matched["id"] or norm(_full(matched)).startswith(norm(_full(g))):
+                        continue  # same text, or the part that was later continued
                     self._swipe_pair(key, g, chosen=_full(matched), events=events)
                 continue
             base = max(gens, key=lambda g: difflib.SequenceMatcher(None, norm(_full(g)), norm(content)).ratio())
