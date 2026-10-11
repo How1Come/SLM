@@ -3,23 +3,60 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import threading
 import time
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer
 
+BUNDLED_NARRATION = os.path.join(os.path.dirname(__file__), "bundled_adapters", "narration")
+NARRATION_VERSION = "narration"
+
 
 def adapters_dir(data_dir):
     return os.path.join(data_dir, "adapters")
 
 
+def _adapter_ok(path: str) -> bool:
+    return os.path.exists(os.path.join(path, "adapter_config.json"))
+
+
+def narration_adapter_dir(data_dir) -> str | None:
+    """Local narration adapter in rp_data, else bundled weights shipped with the repo."""
+    local = os.path.join(adapters_dir(data_dir), NARRATION_VERSION)
+    if _adapter_ok(local):
+        return local
+    if _adapter_ok(BUNDLED_NARRATION):
+        return BUNDLED_NARRATION
+    return None
+
+
+def ensure_narration_adapter(data_dir) -> str | None:
+    """Copy bundled narration LoRA into rp_data once so sleep/chat paths can stack on it."""
+    dest = os.path.join(adapters_dir(data_dir), NARRATION_VERSION)
+    if _adapter_ok(dest):
+        return dest
+    if not _adapter_ok(BUNDLED_NARRATION):
+        return None
+    os.makedirs(adapters_dir(data_dir), exist_ok=True)
+    if not os.path.isdir(dest):
+        shutil.copytree(BUNDLED_NARRATION, dest)
+    return dest
+
+
 def read_current(data_dir) -> str:
+    """Active adapter id: chat vN if current.json says so, else narration when available, else base."""
     p = os.path.join(adapters_dir(data_dir), "current.json")
+    version = None
     if os.path.exists(p):
         with open(p) as f:
-            return json.load(f).get("version", "base")
-    return "base"
+            version = json.load(f).get("version")
+    if version and version.startswith("v") and _adapter_ok(os.path.join(adapters_dir(data_dir), version)):
+        return version
+    if version in (NARRATION_VERSION, "base", None) and narration_adapter_dir(data_dir):
+        return NARRATION_VERSION
+    return version or "base"
 
 
 def write_current(data_dir, version):
@@ -33,6 +70,14 @@ def write_current(data_dir, version):
 def list_adapters(data_dir):
     d = adapters_dir(data_dir)
     out = []
+    narr = narration_adapter_dir(data_dir)
+    if narr:
+        meta = os.path.join(narr, "meta.json")
+        if os.path.exists(meta):
+            with open(meta) as f:
+                out.append({"version": NARRATION_VERSION, **json.load(f)})
+        else:
+            out.append({"version": NARRATION_VERSION, "kind": "narration"})
     if not os.path.isdir(d):
         return out
     for name in sorted(os.listdir(d), key=lambda s: int(s[1:]) if s[1:].isdigit() else -1):
@@ -89,29 +134,49 @@ class Engine:
         self.peft = False
         self.version = "base"
         self.lock = threading.Lock()
+        ensure_narration_adapter(data_dir)
         self.activate(read_current(data_dir))
 
     # ---------- adapters ----------
+    def _stack_paths(self, version: str) -> list[tuple[str, str]]:
+        narr = ensure_narration_adapter(self.data_dir) or narration_adapter_dir(self.data_dir)
+        if version == "base":
+            return []
+        if version == NARRATION_VERSION:
+            if not narr:
+                raise FileNotFoundError("no narration adapter (train with python -m rp.train_narration)")
+            return [(NARRATION_VERSION, narr)]
+        path = os.path.join(adapters_dir(self.data_dir), version)
+        if not _adapter_ok(path):
+            raise FileNotFoundError(f"no adapter at {path}")
+        stack = []
+        if narr:
+            stack.append((NARRATION_VERSION, narr))
+        stack.append((version, path))
+        return stack
+
     def activate(self, version: str):
-        """Hot-swap the active LoRA adapter ("base" = no adapter). Safe to call while serving."""
+        """Hot-swap LoRA adapters. Chat vN stacks on frozen narration when both exist."""
         with self.lock:
             if version == "base":
+                self.model = self.base
+                self.peft = False
                 self.version = "base"
                 return
-            path = os.path.join(adapters_dir(self.data_dir), version)
-            if not os.path.exists(os.path.join(path, "adapter_config.json")):
-                raise FileNotFoundError(f"no adapter at {path}")
+            stack = self._stack_paths(version)
             from peft import PeftModel
-            slot = f"{version}_{time.time_ns()}"  # unique slot name so the same version can be reloaded
-            if not self.peft:
-                self.model = PeftModel.from_pretrained(self.base, path, adapter_name=slot)
-                self.peft = True
-            else:
+            slots = [f"{name}_{time.time_ns()}" for name, _ in stack]
+            name0, path0 = stack[0]
+            self.model = PeftModel.from_pretrained(self.base, path0, adapter_name=slots[0])
+            self.peft = True
+            active = [slots[0]]
+            for (name, path), slot in zip(stack[1:], slots[1:]):
                 self.model.load_adapter(path, adapter_name=slot)
-                self.model.set_adapter(slot)
-                for name in list(self.model.peft_config):
-                    if name != slot:
-                        self.model.delete_adapter(name)
+                active.append(slot)
+            self.model.set_adapter(active[-1] if len(active) == 1 else active)
+            for name in list(self.model.peft_config):
+                if name not in active:
+                    self.model.delete_adapter(name)
             self.model.eval()
             self.version = version
 

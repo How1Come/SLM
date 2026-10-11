@@ -42,6 +42,19 @@ Ablation flags for `slm.train --recipe cradle`: `--no-curriculum`, `--no-prior`,
 Variant flags: `--babble-mode best-of-k`, `--cds-mix 0.07` (keep the child-directed-speech share equal to the
 baseline's), `--phases LISTEN_CDS LISTEN_STORIES BABBLE SLEEP` (budget fractions).
 
+## Role-play narration LoRA (`rp/`)
+
+Teach Qwen2.5-0.5B-Instruct Chinese scene narration with two or more named speakers (CPU LoRA, data licensed in
+`data/rp-narration/SOURCES.md`):
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install transformers peft
+python data/rp-narration/build_train.py
+python -m rp.train_narration
+python -m rp.server    # loads narration adapter by default until a chat sleep vN is active
+```
+
 ## Data (all public, no credentials)
 
 - **AO-CHILDES** (from the BabyLM 10M release): about 345k words of caregiver speech to children, ordered by

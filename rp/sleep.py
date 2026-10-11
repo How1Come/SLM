@@ -28,7 +28,7 @@ import torch
 import torch.nn.functional as F
 
 from . import DEFAULT_DATA_DIR, DEFAULT_MODEL
-from .engine import adapters_dir, list_adapters, prompt_ids, read_current, truncate_messages, write_current
+from .engine import adapters_dir, ensure_narration_adapter, list_adapters, prompt_ids, read_current, truncate_messages, write_current
 from .learn import norm
 from .store import Store
 
@@ -159,12 +159,17 @@ def run(args) -> dict:
         kinds[e["kind"]] = kinds.get(e["kind"], 0) + 1
     log(f"{len(signals)} active signals -> {len(examples)} training items {kinds}")
 
-    from peft import LoraConfig, get_peft_model
+    from peft import LoraConfig, get_peft_model, PeftModel
     from transformers import AutoModelForCausalLM, AutoTokenizer
     tok = AutoTokenizer.from_pretrained(args.model)
     pad = tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16)
     model.eval()
+    narr_path = ensure_narration_adapter(args.data_dir)
+    version = next_version(args.data_dir)
+    if narr_path:
+        log(f"stacking new chat LoRA on frozen narration adapter ({narr_path})")
+        model = PeftModel.from_pretrained(model, narr_path, adapter_name="narration", is_trainable=False)
     canary = canary_set(model, tok, args.data_dir)
     canary_base = canary_nll(model, tok, canary, args.max_prompt_tokens)
 
@@ -184,7 +189,12 @@ def run(args) -> dict:
 
     cfg = LoraConfig(r=args.rank, lora_alpha=2 * args.rank, lora_dropout=0.05, task_type="CAUSAL_LM",
                      target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"])
-    pm = get_peft_model(model, cfg)
+    if narr_path:
+        model.add_adapter(version, cfg)
+        model.set_adapter(version)
+        pm = model
+    else:
+        pm = get_peft_model(model, cfg)
     params = [p for p in pm.parameters() if p.requires_grad]
     for p in params:
         p.data = p.data.float()
@@ -258,9 +268,11 @@ def run(args) -> dict:
     canary_after = canary_nll(pm, tok, canary, args.max_prompt_tokens)
     drift = canary_after - canary_base
     guard_ok = drift <= args.guard_max_drift
-    version = next_version(args.data_dir)
     out_dir = os.path.join(adapters_dir(args.data_dir), version)
-    pm.save_pretrained(out_dir)
+    if narr_path:
+        pm.save_pretrained(out_dir, selected_adapters=[version])
+    else:
+        pm.save_pretrained(out_dir)
     meta = {
         "created": time.time(), "base_model": args.model, "signals": len(signals), "items": len(examples),
         "kinds": kinds, "epochs_run": ep + 1, "optimizer_steps": step, "skipped_nonfinite": skipped, "lr": args.lr, "rank": args.rank,

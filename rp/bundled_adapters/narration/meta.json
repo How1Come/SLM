@@ -1,0 +1,13 @@
+{
+ "kind": "narration",
+ "created": 1791693005.0554829,
+ "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+ "data": "/workspace/data/rp-narration/train.jsonl",
+ "examples": 63,
+ "epochs": 6,
+ "rank": 8,
+ "lr": 0.0003,
+ "train_minutes": 6.16,
+ "train_nll_mean": 0.0017,
+ "max_rss_gb": 4.28
+}

@@ -72,7 +72,31 @@ On each request, `rp/learn.py` compares SillyTavern’s message history to the l
 
 **Sleep** (`python -m rp.sleep`, chat `!sleep` / `!睡觉`, or `POST /rp/sleep`) trains a **new LoRA adapter on CPU** from accumulated signals (SFT on preferred text, DPO on pairs, KTO-style term on rejections). Adapters are versioned under `rp_data/adapters/vN`; `current.json` selects the active one; the server **hot-reloads** after a successful sleep. This **changes weights** — it is not “just a longer prompt.” Roll back with `python -m rp.admin rollback`.
 
-A fresh GitHub clone has **no adapter weights** (`rp_data/` is local); inference starts as the **base Qwen** model until you sleep at least once.
+Chat sleep adapters (`rp_data/adapters/vN`) are local; a fresh clone has none until you sleep. **Narration** weights ship in-repo (see below) and copy into `rp_data/adapters/narration` on first server start.
+
+### Narration LoRA (multi-character scenes, Chinese)
+
+**Qwen2.5-0.5B-Instruct** alone often speaks as one assistant voice, skips named dialogue, or breaks scene flow when the SillyTavern card asks for world narration plus several characters. We measured that on held-out scene prompts (before training: **multi_char_rate 0.0**, little use of 「」 dialogue; see [`runs/rp-narration/eval-base.json`](runs/rp-narration/eval-base.json)). **Extra CPU LoRA training is warranted.**
+
+**Data** (clean / license-clear): original Chinese scenes in [`data/rp-narration/train.jsonl`](data/rp-narration/train.jsonl), built by [`data/rp-narration/build_train.py`](data/rp-narration/build_train.py). Provenance and PD-style inspiration only — no scraped web novels — in [`data/rp-narration/SOURCES.md`](data/rp-narration/SOURCES.md). Held-out prompts: [`data/rp-narration/heldout.json`](data/rp-narration/heldout.json) (not in training).
+
+**Train** (CPU, ~6 min / ~4.3 GB RSS on this VM, rank 8, 63 examples × 6 epochs):
+
+```bash
+python data/rp-narration/build_train.py
+python -m rp.train_narration   # writes rp/bundled_adapters/narration/
+```
+
+**Wire-in:** `rp.server` calls `read_current()` → **`narration`** when no chat `vN` is active (`current.json` missing or not pointing at a sleep adapter). Weights copy to `rp_data/adapters/narration` automatically. Chat **sleep** trains a new `vN` LoRA **on top of frozen narration** when bundled narration exists.
+
+**Before / after** (honest):
+
+| Eval | base | narration LoRA |
+|---|---|---|
+| Original scene prompts (overlap with training themes) | multi_char **0.0**, garbled or single-voice replies | regains training-style 「」 multi-character narration |
+| Fresh held-out prompts ([`runs/rp-narration/eval-fair.json`](runs/rp-narration/eval-fair.json)) | multi_char **0.8**, rubric **0.65** | multi_char **0.8**, rubric **0.60**, slightly more dialogue lines — **gain is small**; both can still paste the wrong scene or hallucinate |
+
+Re-measure: `python -m rp.narration_eval --versions base narration --out runs/rp-narration/eval-fair`
 
 ---
 
