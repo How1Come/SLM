@@ -118,3 +118,15 @@ One-page web UI for the presets above (listen-only, full Cradle, baseline, smoke
 source .venv/bin/activate   # after the Quickstart venv setup
 python -m slm.ui            # http://127.0.0.1:8765/
 ```
+
+## Role-play trainer UI
+
+One-page UI for narration LoRA training (`python -m rp.train_narration`), chat sleep (`python -m rp.sleep`), starting the SillyTavern-compatible server, and a quick held-out eval (`python -m rp.narration_eval`) without retraining:
+
+```bash
+source .venv/bin/activate
+pip install transformers peft fastapi uvicorn httpx   # rp server + training
+python -m rp.ui            # http://127.0.0.1:8847/
+```
+
+The UI starts `rp.server` on port **8627** by default (SillyTavern endpoint `http://127.0.0.1:8627/v1`, model id `qwen2.5-0.5b-rp`). Use `--rp-port` if that port is taken.

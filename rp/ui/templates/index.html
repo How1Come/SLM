@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Role-play trainer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Role-play trainer</h1>
+      <p class="tagline">Narration LoRA, chat sleep, and SillyTavern server — no long shell commands.</p>
+      <p class="tagline sub"><a href="{{ cradle_ui_url }}" target="_blank" rel="noopener">Cradle trainer</a> (baby LM · <code>python -m slm.ui</code>)</p>
+    </div>
+    <div class="status-pill" id="statusPill">Loading…</div>
+  </header>
+
+  <main class="layout">
+    <section class="card status-card">
+      <h2>Status</h2>
+      <div id="overviewBody" class="overview muted">Fetching…</div>
+      <div class="st-box" id="stBox"></div>
+      <div class="server-actions">
+        <button type="button" class="primary" id="serverStartBtn">Start role-play server</button>
+        <button type="button" class="danger" id="serverStopBtn" disabled>Stop server</button>
+      </div>
+    </section>
+
+    <section class="card actions-card">
+      <h2>Training</h2>
+      <p class="hint">Narration uses <code>data/rp-narration/train.jsonl</code> via <code>python -m rp.train_narration</code>. Sleep runs <code>python -m rp.sleep</code> when you have chat corrections.</p>
+      <div class="btn-row">
+        <button type="button" class="primary" id="trainNarrBtn">Train narration LoRA</button>
+        <button type="button" class="secondary" id="evalNarrBtn" title="Held-out base vs narration — no retrain">Quick narration eval</button>
+        <button type="button" class="primary" id="sleepBtn" disabled>Sleep (chat LoRA)</button>
+        <button type="button" class="danger" id="stopJobBtn" disabled>Stop job</button>
+      </div>
+      <p class="sleep-hint" id="sleepHint"></p>
+    </section>
+
+    <section class="card progress-card">
+      <h2>Live log</h2>
+      <div class="progress-bar" aria-hidden="true"><div id="progressFill"></div></div>
+      <p class="metrics" id="metrics">No job running.</p>
+      <pre class="log" id="log" aria-live="polite"></pre>
+    </section>
+
+    <section class="card results-card">
+      <h2>Summary</h2>
+      <div id="summaryBody" class="muted">Run training, sleep, or quick eval to see results here.</div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
