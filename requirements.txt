@@ -1,5 +1,6 @@
 torch>=2.2  # CPU build is enough: pip install torch --index-url https://download.pytorch.org/whl/cpu
 numpy>=1.26
 tokenizers>=0.15
+flask>=3.0
 # optional, only for `python -m slm.evaluate --judge` (independent fluency judge, TinyStories-33M)
 # transformers>=4.40

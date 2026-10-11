@@ -4,5 +4,6 @@ __pycache__/
 data/raw/
 data/prepared.pt
 runs/**/*.pt
+runs/.ui_last_job.json
 runs-*.txt
 rp_data/
