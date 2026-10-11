@@ -1,0 +1,197 @@
+:root {
+  --bg: #0f1419;
+  --surface: #1a222c;
+  --border: #2a3544;
+  --text: #e8eef4;
+  --muted: #9aa8b8;
+  --accent: #5cb8ff;
+  --accent-dim: #3a8fd4;
+  --danger: #f07178;
+  --ok: #7fd992;
+  --radius: 12px;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  min-height: 100vh;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #141c26 0%, var(--bg) 100%);
+}
+
+h1 { margin: 0 0 0.25rem; font-size: 1.5rem; font-weight: 600; }
+h2 { margin: 0 0 0.75rem; font-size: 1.1rem; }
+h3 { margin: 1.25rem 0 0.5rem; font-size: 1rem; }
+
+.tagline { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+.status-pill {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-transform: capitalize;
+}
+
+.status-pill.running { border-color: var(--accent); color: var(--accent); }
+.status-pill.done { border-color: var(--ok); color: var(--ok); }
+.status-pill.error, .status-pill.stopped { border-color: var(--danger); color: var(--danger); }
+
+.layout {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 1.5rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+  .progress-card { grid-column: 1 / -1; }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+}
+
+.preset-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.preset {
+  text-align: left;
+  background: #121820;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.preset:hover { border-color: var(--accent-dim); }
+.preset.selected {
+  border-color: var(--accent);
+  background: #152030;
+  box-shadow: 0 0 0 1px var(--accent-dim);
+}
+
+.preset-title { display: block; font-weight: 600; margin-bottom: 0.35rem; }
+.preset-blurb { display: block; font-size: 0.85rem; color: var(--muted); }
+
+.advanced { margin-top: 1rem; color: var(--muted); font-size: 0.9rem; }
+.advanced-fields {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+label { display: grid; gap: 0.35rem; font-size: 0.85rem; }
+
+input, textarea {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #0d1218;
+  color: var(--text);
+  font: inherit;
+}
+
+.hint { font-size: 0.8rem; color: var(--muted); margin: 0.25rem 0 0; }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+button.primary, button.danger {
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font: inherit;
+}
+
+button.primary {
+  background: var(--accent);
+  color: #061018;
+}
+button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+button.danger {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+button.danger:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.progress-bar {
+  height: 10px;
+  background: #0d1218;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+#progressFill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+  transition: width 0.25s ease;
+}
+
+.metrics { margin: 0 0 0.75rem; font-size: 0.9rem; }
+
+.log, .sample-out {
+  background: #0a0e12;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  max-height: 280px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
+.muted { color: var(--muted); font-size: 0.9rem; }
+
+.sample-block {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  background: #121820;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.chat-block textarea { margin-bottom: 0.5rem; }

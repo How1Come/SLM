@@ -109,3 +109,12 @@ What this shows:
 The full analysis, ablations, learning curves, and next experiments are in
 [`docs/slm-design.md`](docs/slm-design.md). Every
 run's raw numbers are in `runs/results.json` and `runs/report.md`.
+
+## Cradle trainer UI
+
+One-page web UI for the presets above (listen-only, full Cradle, baseline, smoke test), live log/progress, stop, perplexity + sample when a run finishes, and prompt continuation without a terminal:
+
+```bash
+source .venv/bin/activate   # after the Quickstart venv setup
+python -m slm.ui            # http://127.0.0.1:8765/
+```

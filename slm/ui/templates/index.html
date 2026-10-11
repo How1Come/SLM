@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cradle trainer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Cradle trainer</h1>
+      <p class="tagline">Train the baby-inspired small LM on CPU — pick a preset and go.</p>
+    </div>
+    <div class="status-pill" id="statusPill">Idle</div>
+  </header>
+
+  <main class="layout">
+    <section class="card presets">
+      <h2>Presets</h2>
+      <div class="preset-grid">
+        {% for p in presets %}
+        <button type="button" class="preset" data-preset="{{ p.id }}">
+          <span class="preset-title">{{ p.title }}</span>
+          <span class="preset-blurb">{{ p.blurb }}</span>
+        </button>
+        {% endfor %}
+      </div>
+
+      <details class="advanced">
+        <summary>Advanced</summary>
+        <div class="advanced-fields">
+          <label>
+            Budget (trained-token equivalents)
+            <input type="text" id="budget" value="{{ default_budget }}" inputmode="decimal" />
+          </label>
+          <label>
+            Random seed
+            <input type="number" id="seed" value="{{ default_seed }}" step="1" />
+          </label>
+          <p class="hint">Defaults match the README (12M tokens, seed 0). Smoke ignores budget and uses 1M.</p>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button type="button" class="primary" id="startBtn" disabled>Start training</button>
+        <button type="button" class="danger" id="stopBtn" disabled>Stop run</button>
+      </div>
+    </section>
+
+    <section class="card progress-card">
+      <h2>Progress</h2>
+      <div class="progress-bar" aria-hidden="true"><div id="progressFill"></div></div>
+      <p class="metrics" id="metrics">No run yet.</p>
+      <pre class="log" id="log" aria-live="polite"></pre>
+    </section>
+
+    <section class="card results">
+      <h2>Results</h2>
+      <div id="resultsBody" class="muted">Finish a run to see held-out perplexity and a sample.</div>
+      <div class="chat-block">
+        <h3>Continue a prompt</h3>
+        <p class="hint">Uses the same sampler as <code>python -m slm.chat</code> on the latest checkpoint.</p>
+        <form id="chatForm">
+          <textarea id="prompt" rows="3" placeholder="once upon a time, there was a little"></textarea>
+          <button type="submit" class="primary" id="chatBtn" disabled>Generate</button>
+        </form>
+        <pre class="sample-out" id="chatOut"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
