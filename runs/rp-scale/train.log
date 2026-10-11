@@ -1,0 +1,10 @@
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 10475.19it/s]
+[06:51:58] continuing LoRA from rp/bundled_adapters/narration
+/workspace/rp/train_narration.py:104: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  losses.append(float(loss))
+[07:31:26] epoch 1/2 mean_nll=3.915 (2371s)
+[08:03:55] epoch 2/2 mean_nll=3.563 (4320s)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[08:14:54] saved narration adapter -> rp/bundled_adapters/narration (82.98 min, RSS ~8.4 GB)
+RESULT {"status": "ok", "out": "rp/bundled_adapters/narration", "kind": "narration", "created": 1791706494.8941815, "base_model": "Qwen/Qwen2.5-0.5B-Instruct", "data": "/workspace/data/rp-scale/train.jsonl", "init_adapter": "/workspace/rp/bundled_adapters/narration", "examples": 1523, "epochs": 2, "rank": 8, "lr": 0.0001, "train_minutes": 82.98, "train_nll_mean": NaN, "max_rss_gb": 8.4, "corpus_manifest": {"examples": 1523, "token_estimate": {"total": 833141, "narration": 788995, "adult_nsfw": 44146, "nsfw_fraction": 0.053}, "sources": [{"id": "gutenberg:23962", "title": "西游记", "license": "public-domain-gutenberg"}, {"id": "gutenberg:25393", "title": "施公案", "license": "public-domain-gutenberg"}, {"id": "gutenberg:57227", "title": "平妖传", "license": "public-domain-gutenberg"}, {"id": "gutenberg:25128", "title": "孽海花", "license": "public-domain-gutenberg"}, {"id": "gutenberg:23863", "title": "水浒传", "license": "public-domain-gutenberg"}, {"id": "rp-narration-seed", "license": "project-original"}, {"id": "WoonaAI/ChubCards", "license": "hf-chubcards-user-cards", "filter": "metadata-nsfw-age21-no-minor-keywords"}], "mix_target": "5-10% adult tokens"}}

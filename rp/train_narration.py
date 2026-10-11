@@ -52,8 +52,15 @@ def run(args) -> dict:
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16)
     model.eval()
 
+    def enc_resp(text: str) -> str:
+        ids = tok(text.strip() + "<|im_end|>", add_special_tokens=False).input_ids
+        if len(ids) > args.max_response_tokens:
+            ids = ids[: args.max_response_tokens]
+            text = tok.decode(ids, skip_special_tokens=True)
+        return text
+
     for e in examples:
-        e["enc"] = encode(tok, e["messages"], e["response"], args.max_prompt_tokens)
+        e["enc"] = encode(tok, e["messages"], enc_resp(e["response"]), args.max_prompt_tokens)
 
     cfg = LoraConfig(
         r=args.rank,
@@ -154,6 +161,7 @@ def parser():
     ap.add_argument("--rank", type=int, default=8)
     ap.add_argument("--accum", type=int, default=1)
     ap.add_argument("--max-prompt-tokens", type=int, default=768)
+    ap.add_argument("--max-response-tokens", type=int, default=320)
     ap.add_argument("--max-minutes", type=float, default=120)
     ap.add_argument("--min-examples", type=int, default=8)
     ap.add_argument("--threads", type=int, default=None)

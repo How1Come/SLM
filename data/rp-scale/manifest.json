@@ -1,10 +1,10 @@
 {
   "examples": 1523,
   "token_estimate": {
-    "total": 1322361,
-    "narration": 1250973,
-    "adult_nsfw": 71388,
-    "nsfw_fraction": 0.054
+    "total": 833141,
+    "narration": 788995,
+    "adult_nsfw": 44146,
+    "nsfw_fraction": 0.053
   },
   "sources": [
     {
