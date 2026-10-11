@@ -2,26 +2,27 @@
 
 Raw text and `train.jsonl` stay **local only** (gitignored). This file records **names and licenses**, not prose.
 
+## Why not scraped 网文?
+
+Paywalled or platform-hosted **网文** (起点、晋江等) is **copyrighted**; the project rule is **no scraped copyrighted web novels**. The scaled mix therefore uses **project-original modern 网文体** (都市/电竞/异能/修仙/悬疑等白话节奏) for most narration tokens, not classical-only PD fiction.
+
 ## Chinese narration (majority of tokens)
 
 | Source | License | Use |
 |--------|---------|-----|
-| Project Gutenberg eBooks #23962 (西游记), #25393 (施公案), #57227 (平妖传), #25128 (孽海花), #23863 (水浒传) | Public domain (Gutenberg) | Chunked chapter prose → scene narration SFT (metadata: title + chapter heading only in prompts) |
-| `data/rp-narration/train.jsonl` (project-authored) | Project original / PD-style scenes | Seeded examples + same system prompt as the 63-example narration run |
-
-No modern paywalled web novels. No verbatim paste from fan sites.
+| `data/rp-scale/modern_wen.py` → **project-original modern 网文** | Project original | ~1100 procedural scenes, simplified Chinese, web-novel pacing |
+| `data/rp-narration/train.jsonl` | Project original | Seed scenes + shared system prompt |
+| Project Gutenberg **孽海花** (#25128) only, capped | Public domain | Small classical register slice (~≤120 chunks), not the bulk |
 
 ## Adult NSFW slice (~5–10% of tokens)
 
 | Source | License | Use |
 |--------|---------|-----|
-| Hugging Face dataset `WoonaAI/ChubCards` (per-file JSON under `RAW/`) | User-submitted character cards (aggregator; training use local only) | Rows kept only when **tags** show adult/NSFW, **parsed age metadata ≥ 21** in name/tags/description, and **no** minor/underage keywords in metadata |
-
-No scraped porn sites. NSFW rows are filtered on **metadata only** before writing `train.jsonl`.
+| Hugging Face `WoonaAI/ChubCards` | User-submitted cards (local training only) | Metadata-only filter: adult tags, age ≥ 21, no minor keywords |
 
 ## Regeneration
 
 ```bash
 python data/rp-scale/build_corpus.py
-python -m rp.train_narration --data data/rp-scale/train.jsonl --init-adapter rp/bundled_adapters/narration --epochs 3 --max-minutes 210
+python -m rp.train_narration --data data/rp-scale/train.jsonl --init-adapter rp/bundled_adapters/narration ...
 ```

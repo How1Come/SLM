@@ -19,6 +19,8 @@ from typing import Iterable
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
+sys.path.insert(0, HERE)
+from modern_wen import iter_modern_wen_examples  # noqa: E402
 OUT_JSONL = os.path.join(HERE, "train.jsonl")
 MANIFEST = os.path.join(HERE, "manifest.json")
 RAW = os.path.join(HERE, "raw")
@@ -29,13 +31,12 @@ SYSTEM = (
     "对白用「」标注，说话前写明角色名。适当推进情节，不要跳出故事解释规则。"
 )
 
+# Small PD classical slice for register variety only; bulk is modern 网文体 (project-original).
 GUTENBERG = [
-    ("gutenberg:23962", "西游记", "https://www.gutenberg.org/files/23962/23962-0.txt"),
-    ("gutenberg:25393", "施公案", "https://www.gutenberg.org/files/25393/25393-0.txt"),
-    ("gutenberg:57227", "平妖传", "https://www.gutenberg.org/files/57227/57227-0.txt"),
     ("gutenberg:25128", "孽海花", "https://www.gutenberg.org/files/25128/25128-0.txt"),
-    ("gutenberg:23863", "水浒传", "https://www.gutenberg.org/files/23863/23863-0.txt"),
 ]
+GUTENBERG_CHUNK_CAP_PER_BOOK = 120
+MODERN_WEN_TARGET = 1100
 
 CHUB_REPO = "WoonaAI/ChubCards"
 MINOR = re.compile(
@@ -125,7 +126,7 @@ def _flush_chunk(book_id: str, title: str, chapter: str, lines: list[str]) -> It
         f"写出至少两名角色的对白（「」标注，说话前写明角色名），并推进情节。"
     )
     # Target: excerpt body (PD); cap length for training stability.
-    response = chunk[:1200]
+    response = chunk[:520]
     if len(response) < 80:
         return
     yield {
@@ -204,7 +205,7 @@ def chub_rows(target: int) -> list[dict]:
                         {"role": "system", "content": system[:2000]},
                         {"role": "user", "content": user[:1500]},
                     ],
-                    "response": body[:1800],
+                    "response": body[:520],
                     "_src": f"chubcards:{os.path.basename(f)}:{suffix}",
                     "_license": "hf-chubcards-user-cards",
                 }
@@ -231,11 +232,18 @@ def rebalance(rows: list[dict], tok, nsfw_lo: float = 0.06, nsfw_hi: float = 0.1
         return rows
     if not adult:
         return narr
-    total_n, narr_t, _ = estimate_tokens(narr + adult, tok)
-    target_adult = int(narr_t * nsfw_lo / (1 - nsfw_lo))
-    target_hi = int(narr_t * nsfw_hi / (1 - nsfw_hi))
-    keep = min(len(adult), max(target_adult, min(target_hi, len(adult))))
-    adult = adult[:keep]
+    _, narr_t, _ = estimate_tokens(narr, tok)
+    target_hi_tok = int(narr_t * nsfw_hi / (1 - nsfw_hi))
+    kept, used = [], 0
+    for row in adult:
+        t = len(tok.encode(row["messages"][0]["content"] + row["messages"][1]["content"] + row["response"]))
+        if used + t > target_hi_tok:
+            break
+        kept.append(row)
+        used += t
+    if not kept and adult:
+        kept = adult[: max(1, len(adult) // 4)]
+    adult = kept
     merged = narr + adult
     random.shuffle(merged)
     return merged
@@ -247,16 +255,24 @@ def main() -> int:
     rows: list[dict] = load_seed_rows()
     log(f"seed examples: {len(rows)}")
 
+    modern = iter_modern_wen_examples(MODERN_WEN_TARGET)
+    rows.extend(modern)
+    log(f"modern-wen (project-original 网文体): +{len(modern)}")
+
     for book_id, title, url in GUTENBERG:
         dest = os.path.join(RAW, "gutenberg", url.split("/")[-1])
         download(url, dest)
         n_before = len(rows)
+        added = 0
         for ex in iter_gutenberg_examples(book_id, title, dest):
+            if added >= GUTENBERG_CHUNK_CAP_PER_BOOK:
+                break
             rows.append(ex)
-        log(f"{book_id}: +{len(rows) - n_before} chunks")
+            added += 1
+        log(f"{book_id}: +{added} PD chunks (capped)")
 
     # Cap narration rows so CPU train finishes in a few hours.
-    narr_cap = 1350
+    narr_cap = 1450
     narr = [r for r in rows if r.get("_license") != "hf-chubcards-user-cards"]
     if len(narr) > narr_cap:
         random.shuffle(narr)
@@ -285,12 +301,16 @@ def main() -> int:
         "examples": len(rows),
         "token_estimate": {"total": total_t, "narration": narr_t, "adult_nsfw": adult_t, "nsfw_fraction": frac},
         "sources": [
-            {"id": s[0], "title": s[1], "license": "public-domain-gutenberg"}
-            for s in GUTENBERG
+            {
+                "id": "project-original-modern-wen",
+                "license": "project-original",
+                "note": "modern 网文 register; not scraped from paywalled sites",
+            },
+            {"id": "rp-narration-seed", "license": "project-original"},
         ]
-        + [{"id": "rp-narration-seed", "license": "project-original"}]
+        + [{"id": s[0], "title": s[1], "license": "public-domain-gutenberg", "cap_chunks": GUTENBERG_CHUNK_CAP_PER_BOOK} for s in GUTENBERG]
         + [{"id": CHUB_REPO, "license": "hf-chubcards-user-cards", "filter": "metadata-nsfw-age21-no-minor-keywords"}],
-        "mix_target": "5-10% adult tokens",
+        "mix_target": "5-10% adult tokens; narration majority modern-wen",
     }
     with open(MANIFEST, "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
