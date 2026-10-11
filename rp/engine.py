@@ -43,11 +43,24 @@ def list_adapters(data_dir):
     return out
 
 
+def prompt_ids(tok, messages) -> list[int]:
+    """Token ids for a chat prompt. Transformers 5 returns a BatchEncoding here, older versions a list."""
+    out = tok.apply_chat_template(messages, tokenize=True, add_generation_prompt=True)
+    if isinstance(out, list):
+        return out
+    ids = out["input_ids"]
+    if hasattr(ids, "tolist"):
+        ids = ids.tolist()
+    if ids and isinstance(ids[0], list):
+        ids = ids[0]
+    return list(ids)
+
+
 def truncate_messages(tok, messages, max_tokens):
     """Drop the oldest non-system messages until the rendered prompt fits."""
     msgs = list(messages)
     while True:
-        n = len(tok.apply_chat_template(msgs, tokenize=True, add_generation_prompt=True))
+        n = len(prompt_ids(tok, msgs))
         droppable = [i for i, m in enumerate(msgs) if m["role"] != "system"]
         if n <= max_tokens or len(droppable) <= 1:
             return msgs

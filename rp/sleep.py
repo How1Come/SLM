@@ -28,7 +28,7 @@ import torch
 import torch.nn.functional as F
 
 from . import DEFAULT_DATA_DIR, DEFAULT_MODEL
-from .engine import adapters_dir, list_adapters, read_current, truncate_messages, write_current
+from .engine import adapters_dir, list_adapters, prompt_ids, read_current, truncate_messages, write_current
 from .learn import norm
 from .store import Store
 
@@ -77,7 +77,7 @@ def build_examples(signals, max_examples):
 
 def encode(tok, messages, response, max_prompt):
     msgs = truncate_messages(tok, messages, max_prompt)
-    p = tok.apply_chat_template(msgs, tokenize=True, add_generation_prompt=True)
+    p = prompt_ids(tok, msgs)
     if len(p) > max_prompt:  # a very long system prompt: keep its head and the end of the prompt
         p = p[: max_prompt // 2] + p[-max_prompt // 2:]
     r = tok(response.strip() + "<|im_end|>", add_special_tokens=False).input_ids
@@ -112,7 +112,8 @@ def canary_set(model, tok, data_dir):
     out = []
     for q in CANARY_PROMPTS:
         msgs = [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": q}]
-        ids = tok.apply_chat_template(msgs, add_generation_prompt=True, return_tensors="pt")
+        batch = tok.apply_chat_template(msgs, add_generation_prompt=True, return_tensors="pt")
+        ids = batch if torch.is_tensor(batch) else batch["input_ids"]
         with torch.inference_mode():
             g = model.generate(ids, attention_mask=torch.ones_like(ids), max_new_tokens=64, do_sample=False, pad_token_id=tok.eos_token_id)
         out.append({"messages": msgs, "response": tok.decode(g[0, ids.shape[1]:], skip_special_tokens=True)})
