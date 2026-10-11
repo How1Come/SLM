@@ -2,7 +2,7 @@
 
 ## Goal
 
-Build a **Chinese role-play small model** used through **SillyTavern**, **learning from chat** (edits, swipes, feedback), on **CPU only**, with the working copy and runtime kept **in the cloud**. Public home (empty today, not pushed yet): [https://github.com/How1Come/SLM](https://github.com/How1Come/SLM).
+Build a **Chinese role-play small model** used through **SillyTavern**, **learning from chat** (edits, swipes, feedback), on **CPU only**, with the working copy and runtime kept **in the cloud**. Public home: [https://github.com/How1Come/SLM](https://github.com/How1Come/SLM).
 
 ## Cradle experiment (`slm/`)
 
