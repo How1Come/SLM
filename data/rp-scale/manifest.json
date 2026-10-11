@@ -1,0 +1,46 @@
+{
+  "examples": 1523,
+  "token_estimate": {
+    "total": 1322361,
+    "narration": 1250973,
+    "adult_nsfw": 71388,
+    "nsfw_fraction": 0.054
+  },
+  "sources": [
+    {
+      "id": "gutenberg:23962",
+      "title": "西游记",
+      "license": "public-domain-gutenberg"
+    },
+    {
+      "id": "gutenberg:25393",
+      "title": "施公案",
+      "license": "public-domain-gutenberg"
+    },
+    {
+      "id": "gutenberg:57227",
+      "title": "平妖传",
+      "license": "public-domain-gutenberg"
+    },
+    {
+      "id": "gutenberg:25128",
+      "title": "孽海花",
+      "license": "public-domain-gutenberg"
+    },
+    {
+      "id": "gutenberg:23863",
+      "title": "水浒传",
+      "license": "public-domain-gutenberg"
+    },
+    {
+      "id": "rp-narration-seed",
+      "license": "project-original"
+    },
+    {
+      "id": "WoonaAI/ChubCards",
+      "license": "hf-chubcards-user-cards",
+      "filter": "metadata-nsfw-age21-no-minor-keywords"
+    }
+  ],
+  "mix_target": "5-10% adult tokens"
+}

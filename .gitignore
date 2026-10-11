@@ -7,3 +7,5 @@ runs/**/*.pt
 runs/.ui_last_job.json
 runs-*.txt
 rp_data/
+data/rp-scale/raw/
+data/rp-scale/train.jsonl

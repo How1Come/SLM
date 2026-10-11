@@ -44,7 +44,7 @@ def run(args) -> dict:
         log(f"need at least {args.min_examples} examples, got {len(examples)}")
         return {"status": "failed", "reason": "not enough data"}
 
-    from peft import LoraConfig, get_peft_model
+    from peft import LoraConfig, PeftModel, get_peft_model
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     tok = AutoTokenizer.from_pretrained(args.model)
@@ -62,7 +62,14 @@ def run(args) -> dict:
         task_type="CAUSAL_LM",
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
     )
-    pm = get_peft_model(model, cfg)
+    init_path = args.init_adapter
+    if init_path and os.path.isdir(init_path) and os.path.exists(os.path.join(init_path, "adapter_config.json")):
+        log(f"continuing LoRA from {init_path}")
+        pm = PeftModel.from_pretrained(model, init_path, is_trainable=True)
+    else:
+        if init_path:
+            log(f"init adapter missing at {init_path}, training fresh LoRA")
+        pm = get_peft_model(model, cfg)
     params = [p for p in pm.parameters() if p.requires_grad]
     for p in params:
         p.data = p.data.float()
@@ -113,6 +120,7 @@ def run(args) -> dict:
         "created": time.time(),
         "base_model": args.model,
         "data": os.path.abspath(args.data),
+        "init_adapter": os.path.abspath(init_path) if init_path else None,
         "examples": len(examples),
         "epochs": args.epochs,
         "rank": args.rank,
@@ -121,6 +129,9 @@ def run(args) -> dict:
         "train_nll_mean": round(sum(after) / len(after), 4),
         "max_rss_gb": round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 2),
     }
+    if os.path.exists(os.path.join(os.path.dirname(args.data), "manifest.json")):
+        with open(os.path.join(os.path.dirname(args.data), "manifest.json"), encoding="utf-8") as mf:
+            meta["corpus_manifest"] = json.load(mf)
     with open(os.path.join(args.out, "meta.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=1)
     log(f"saved narration adapter -> {args.out} ({meta['train_minutes']} min, RSS ~{meta['max_rss_gb']} GB)")
@@ -131,6 +142,11 @@ def parser():
     here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", default=os.path.join(here, "data", "rp-narration", "train.jsonl"))
+    ap.add_argument(
+        "--init-adapter",
+        default=None,
+        help="Continue training an existing narration LoRA (e.g. rp/bundled_adapters/narration)",
+    )
     ap.add_argument("--out", default=os.path.join(here, "rp", "bundled_adapters", "narration"))
     ap.add_argument("--model", default=os.environ.get("RP_MODEL", DEFAULT_MODEL))
     ap.add_argument("--epochs", type=int, default=6)
