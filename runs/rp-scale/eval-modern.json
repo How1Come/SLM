@@ -1,0 +1,19 @@
+{
+ "heldout": "data/rp-narration/heldout.json",
+ "created": "Sun Oct 11 11:23:26 2026",
+ "max_rss_gb": 1.54,
+ "versions": {
+  "base": {
+   "multi_char_rate": 0.8,
+   "avg_named_chars": 1.4,
+   "avg_dialogue_lines": 3.6,
+   "rubric_hit": 0.6
+  },
+  "narration": {
+   "multi_char_rate": 0.6,
+   "avg_named_chars": 1.2,
+   "avg_dialogue_lines": 3.0,
+   "rubric_hit": 0.6
+  }
+ }
+}

@@ -1,54 +1,43 @@
 {
  "kind": "narration",
- "created": 1791706494.8941815,
+ "created": 1791717092.2984016,
  "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
  "data": "/workspace/data/rp-scale/train.jsonl",
  "init_adapter": "/workspace/rp/bundled_adapters/narration",
- "examples": 1523,
+ "examples": 1428,
  "epochs": 2,
  "rank": 8,
  "lr": 0.0001,
- "train_minutes": 82.98,
- "train_nll_mean": 3.563,
- "train_nll_epoch_mean": 3.563,
- "max_rss_gb": 8.4,
+ "train_minutes": 51.83,
+ "train_nll_mean": 0.4686,
+ "epoch_nll_means": [
+  0.9594,
+  0.6483
+ ],
+ "max_rss_gb": 7.35,
  "corpus_manifest": {
-  "examples": 1523,
+  "examples": 1428,
   "token_estimate": {
-   "total": 833141,
-   "narration": 788995,
-   "adult_nsfw": 44146,
-   "nsfw_fraction": 0.053
+   "total": 360363,
+   "narration": 324449,
+   "adult_nsfw": 35914,
+   "nsfw_fraction": 0.0997
   },
   "sources": [
    {
-    "id": "gutenberg:23962",
-    "title": "西游记",
-    "license": "public-domain-gutenberg"
-   },
-   {
-    "id": "gutenberg:25393",
-    "title": "施公案",
-    "license": "public-domain-gutenberg"
-   },
-   {
-    "id": "gutenberg:57227",
-    "title": "平妖传",
-    "license": "public-domain-gutenberg"
-   },
-   {
-    "id": "gutenberg:25128",
-    "title": "孽海花",
-    "license": "public-domain-gutenberg"
-   },
-   {
-    "id": "gutenberg:23863",
-    "title": "水浒传",
-    "license": "public-domain-gutenberg"
+    "id": "project-original-modern-wen",
+    "license": "project-original",
+    "note": "modern 网文 register; not scraped from paywalled sites"
    },
    {
     "id": "rp-narration-seed",
     "license": "project-original"
+   },
+   {
+    "id": "gutenberg:25128",
+    "title": "孽海花",
+    "license": "public-domain-gutenberg",
+    "cap_chunks": 120
    },
    {
     "id": "WoonaAI/ChubCards",
@@ -56,6 +45,6 @@
     "filter": "metadata-nsfw-age21-no-minor-keywords"
    }
   ],
-  "mix_target": "5-10% adult tokens"
+  "mix_target": "5-10% adult tokens; narration majority modern-wen"
  }
 }

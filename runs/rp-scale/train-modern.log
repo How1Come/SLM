@@ -1,0 +1,7 @@
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 10736.12it/s]
+[10:19:44] continuing LoRA from rp/bundled_adapters/narration
+[10:44:59] epoch 1/2 mean_nll=0.959 (1517s)
+[11:11:14] epoch 2/2 mean_nll=0.648 (3092s)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[11:11:32] saved narration adapter -> rp/bundled_adapters/narration (51.83 min, RSS ~7.35 GB)
+RESULT {"status": "ok", "out": "rp/bundled_adapters/narration", "kind": "narration", "created": 1791717092.2984016, "base_model": "Qwen/Qwen2.5-0.5B-Instruct", "data": "/workspace/data/rp-scale/train.jsonl", "init_adapter": "/workspace/rp/bundled_adapters/narration", "examples": 1428, "epochs": 2, "rank": 8, "lr": 0.0001, "train_minutes": 51.83, "train_nll_mean": 0.4686, "epoch_nll_means": [0.9594, 0.6483], "max_rss_gb": 7.35, "corpus_manifest": {"examples": 1428, "token_estimate": {"total": 360363, "narration": 324449, "adult_nsfw": 35914, "nsfw_fraction": 0.0997}, "sources": [{"id": "project-original-modern-wen", "license": "project-original", "note": "modern 网文 register; not scraped from paywalled sites"}, {"id": "rp-narration-seed", "license": "project-original"}, {"id": "gutenberg:25128", "title": "孽海花", "license": "public-domain-gutenberg", "cap_chunks": 120}, {"id": "WoonaAI/ChubCards", "license": "hf-chubcards-user-cards", "filter": "metadata-nsfw-age21-no-minor-keywords"}], "mix_target": "5-10% adult tokens; narration majority modern-wen"}}

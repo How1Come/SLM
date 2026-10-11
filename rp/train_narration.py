@@ -89,6 +89,7 @@ def run(args) -> dict:
 
     pm.train()
     step = 0
+    epoch_means: list[float] = []
     for ep in range(args.epochs):
         order = list(range(len(examples)))
         random.shuffle(order)
@@ -99,26 +100,39 @@ def run(args) -> dict:
                 _, nll = seq_logps(pm, [e["enc"]], pad)
                 loss = nll[0]
             if not torch.isfinite(loss):
+                opt.zero_grad(set_to_none=True)
                 continue
             (loss / args.accum).backward()
-            losses.append(float(loss))
+            losses.append(float(loss.detach()))
             if (j + 1) % args.accum == 0 or j == len(order) - 1:
-                torch.nn.utils.clip_grad_norm_(params, 1.0)
+                grad_norm = torch.nn.utils.clip_grad_norm_(params, 1.0)
+                if not torch.isfinite(grad_norm):
+                    opt.zero_grad(set_to_none=True)
+                    continue
                 opt.step()
                 sched.step()
-                opt.zero_grad()
+                opt.zero_grad(set_to_none=True)
                 step += 1
             if time.time() - t0 > args.max_minutes * 60:
                 log(f"stopped at time budget {args.max_minutes} min")
                 break
-        log(f"epoch {ep + 1}/{args.epochs} mean_nll={sum(losses) / max(1, len(losses)):.3f} ({time.time() - t0:.0f}s)")
+        ep_mean = sum(losses) / max(1, len(losses))
+        epoch_means.append(ep_mean)
+        log(f"epoch {ep + 1}/{args.epochs} mean_nll={ep_mean:.3f} ({time.time() - t0:.0f}s)")
+
+    nan_params = sum(int(torch.isnan(p).sum()) for p in params)
+    if nan_params:
+        log(f"refusing to save: {nan_params} NaN LoRA parameters")
+        return {"status": "failed", "reason": "nan weights", "nan_params": nan_params, "epoch_nll_means": [round(x, 4) for x in epoch_means]}
 
     pm.eval()
     with torch.inference_mode(), torch.autocast("cpu", dtype=torch.bfloat16):
         after = []
-        for e in examples:
+        for e in examples[:64]:
             _, nll = seq_logps(pm, [e["enc"]], pad)
-            after.append(float(nll[0]))
+            val = float(nll[0])
+            if math.isfinite(val):
+                after.append(val)
 
     os.makedirs(args.out, exist_ok=True)
     pm.save_pretrained(args.out)
@@ -133,7 +147,8 @@ def run(args) -> dict:
         "rank": args.rank,
         "lr": args.lr,
         "train_minutes": round((time.time() - t0) / 60, 2),
-        "train_nll_mean": round(sum(after) / len(after), 4),
+        "train_nll_mean": round(sum(after) / len(after), 4) if after and all(math.isfinite(x) for x in after) else (round(epoch_means[-1], 4) if epoch_means else None),
+        "epoch_nll_means": [round(x, 4) for x in epoch_means],
         "max_rss_gb": round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 2),
     }
     if os.path.exists(os.path.join(os.path.dirname(args.data), "manifest.json")):
