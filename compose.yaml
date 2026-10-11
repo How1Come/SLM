@@ -1,0 +1,25 @@
+services:
+  roleplay:
+    build: .
+    init: true
+    restart: unless-stopped
+    environment:
+      RP_AUTH_TOKEN: ${RP_AUTH_TOKEN:?Set RP_AUTH_TOKEN in .env to at least 24 random characters}
+      RP_SECURE_COOKIE: ${RP_SECURE_COOKIE:-0}
+      RP_MODEL: ${RP_MODEL:-Qwen/Qwen2.5-0.5B-Instruct}
+      RP_HOST: 0.0.0.0
+      RP_UI_PORT: 8847
+      RP_PORT: 8627
+      RP_DATA_DIR: /data
+      HF_HOME: /data/huggingface
+      OMP_NUM_THREADS: 1
+      TOKENIZERS_PARALLELISM: 'false'
+    ports:
+      - '127.0.0.1:8847:8847'
+    volumes:
+      - roleplay-data:/data
+    stop_grace_period: 90s
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  roleplay-data:

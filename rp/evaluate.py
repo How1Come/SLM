@@ -17,7 +17,8 @@ import resource
 import time
 
 from . import DEFAULT_DATA_DIR, DEFAULT_MODEL
-from .engine import Engine
+from .engine import Engine, list_adapters
+from .sleep import software_versions
 from .stprompt import build, default_system, greeting, system_from_db
 
 HERE = os.path.dirname(__file__)
@@ -43,15 +44,21 @@ def main():
     ap.add_argument("--threads", type=int, default=None)
     ap.add_argument("--out", default="runs/rp-demo/eval")
     a = ap.parse_args()
+    if a.samples < 1 or a.max_tokens < 1:
+        ap.error("samples and max-tokens must be positive")
 
     card = json.load(open(a.card, encoding="utf-8"))
     demo = json.load(open(a.demo, encoding="utf-8"))
     system = system_from_db(os.path.join(a.data_dir, "rp.db"), card["data"]["name"]) or default_system(card, a.user)
     greet = greeting(card, a.user)
-    eng = Engine(a.model, a.data_dir, threads=a.threads)
-    results = {"system_prompt": system, "versions": {}}
+    eng = Engine(a.model, a.data_dir, threads=a.threads, initial_version="base")
+    adapters = {item["version"]: item for item in list_adapters(a.data_dir)}
+    results = {"system_prompt": system, "base_model": a.model, "versions": {}, "software": software_versions(),
+               "evaluation_kind": "automatic_heuristics", "samples": a.samples, "max_tokens": a.max_tokens,
+               "seeds": [1000 + index for index in range(a.samples)]}
     for v in a.versions:
-        eng.activate(v)
+        if eng.version != v:
+            eng.activate(v)
         rows, nlls, toks, secs, firsts = [], [], [], [], []
         for h in demo["heldout"]:
             msgs = build(system, greet, [(h["user"], None)])
@@ -68,6 +75,7 @@ def main():
         rate = {k: round(sum(s[k] for s in allm) / len(allm), 3) for k in ("benzuo", "shusheng", "action", "no_assistant_speak")}
         rate["persona_score"] = round(sum(rate.values()) / 4, 3)
         results["versions"][v] = {
+            "active_adapter": eng.version, "foundation": adapters.get(v, {}).get("foundation", {"kind": v}),
             "gold_nll": round(sum(nlls) / len(nlls), 4), **rate,
             "tokens_per_s": round(sum(toks) / max(1e-6, sum(secs) - sum(firsts)), 1),
             "first_token_s": round(sum(firsts) / len(firsts), 3), "avg_reply_s": round(sum(secs) / len(secs), 2),

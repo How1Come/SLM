@@ -1,6 +1,16 @@
-torch>=2.2  # CPU build is enough: pip install torch --index-url https://download.pytorch.org/whl/cpu
-numpy>=1.26
-tokenizers>=0.15
-flask>=3.0
-# optional, only for `python -m slm.evaluate --judge` (independent fluency judge, TinyStories-33M)
-# transformers>=4.40
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.6.0; sys_platform != "darwin" or platform_machine != "x86_64"
+torch==2.2.2; sys_platform == "darwin" and platform_machine == "x86_64"
+numpy==1.26.4
+transformers==4.56.2
+peft==0.17.1
+accelerate==1.15.0
+tokenizers==0.22.2
+safetensors==0.8.0
+pydantic==2.14.0
+flask==3.1.2
+waitress==3.0.2
+fastapi==0.116.1
+uvicorn==0.35.0
+httpx==0.28.1
+psutil==7.0.0

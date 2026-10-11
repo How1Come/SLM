@@ -33,7 +33,9 @@ def main():
     f = sub.add_parser("fix")
     f.add_argument("text")
     a = ap.parse_args()
-    c = httpx.Client(base_url=a.server, timeout=3600)
+    token = os.environ.get("RP_AUTH_TOKEN", "")
+    headers = {"Authorization":"Bearer " + token} if token else {}
+    c = httpx.Client(base_url=a.server, timeout=3600, headers=headers, trust_env=False)
 
     if a.cmd == "stats":
         out = c.get("/rp/stats").json()

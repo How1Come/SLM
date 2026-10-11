@@ -1,10 +1,4 @@
-"""CPU LoRA: teach Qwen2.5-0.5B Chinese multi-character narration.
-
-    python data/rp-narration/build_train.py
-    python -m rp.train_narration [--out rp/bundled_adapters/narration]
-
-Writes adapter weights + meta.json. Does not touch chat sleep adapters (vN).
-"""
+"""Checkpointed CPU LoRA training for Chinese multi-character narration."""
 from __future__ import annotations
 
 import argparse
@@ -12,179 +6,179 @@ import json
 import math
 import os
 import random
-import resource
+import signal
 import sys
+import threading
 import time
 
 import torch
+
 from . import DEFAULT_MODEL
-from .engine import prompt_ids, truncate_messages
-from .sleep import encode, log, seq_logps
+from .engine import load_adapter, load_foundation, local_model_hash
+from .sleep import TARGET_MODULES, TrainingJournal, atomic_json, encode, fingerprint, log, make_optimizer, read_checkpoint, restore_args, seq_logps, software_versions, training_lock, validate_args
 
 
-def load_jsonl(path):
+def load_jsonl(path: str) -> list[dict]:
     rows = []
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                rows.append(json.loads(line))
+    with open(path, encoding="utf-8") as source:
+        for line_number, line in enumerate(source, 1):
+            if not line.strip():
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError as error:
+                raise ValueError(f"Line {line_number} is not valid JSON.") from error
+            messages = item.get("messages")
+            if not isinstance(messages, list) or not messages:
+                raise ValueError(f"Line {line_number} needs a messages list.")
+            if "response" in item:
+                prompt, response = messages, item["response"]
+            elif messages[-1].get("role") == "assistant":
+                prompt, response = messages[:-1], messages[-1].get("content")
+            else:
+                raise ValueError(f"Line {line_number} is missing the final assistant response.")
+            if not prompt or not any(message.get("role") == "user" for message in prompt):
+                raise ValueError(f"Line {line_number} needs a user message before its response.")
+            if any(message.get("role") not in {"system", "user", "assistant"} or not isinstance(message.get("content"), str)
+                   or not message["content"].strip() for message in prompt):
+                raise ValueError(f"Line {line_number} contains an empty message or unsupported role.")
+            if not isinstance(response, str) or not response.strip():
+                raise ValueError(f"Line {line_number} has an empty response.")
+            rows.append({"messages": prompt, "response": response})
     return rows
 
 
-def run(args) -> dict:
-    t0 = time.time()
+def _run(args, stop_event: threading.Event, state: dict | None = None) -> dict:
+    validate_args(args)
     if args.threads:
         torch.set_num_threads(args.threads)
     torch.manual_seed(args.seed)
     random.seed(args.seed)
-
-    examples = load_jsonl(args.data)
+    examples = state["examples"] if state else load_jsonl(args.data)
     if len(examples) < args.min_examples:
-        log(f"need at least {args.min_examples} examples, got {len(examples)}")
-        return {"status": "failed", "reason": "not enough data"}
-
-    from peft import LoraConfig, PeftModel, get_peft_model
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-
-    tok = AutoTokenizer.from_pretrained(args.model)
-    pad = tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id
-    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16)
-    model.eval()
-
-    def enc_resp(text: str) -> str:
-        ids = tok(text.strip() + "<|im_end|>", add_special_tokens=False).input_ids
-        if len(ids) > args.max_response_tokens:
-            ids = ids[: args.max_response_tokens]
-            text = tok.decode(ids, skip_special_tokens=True)
-        return text
-
-    for e in examples:
-        e["enc"] = encode(tok, e["messages"], enc_resp(e["response"]), args.max_prompt_tokens)
-
-    cfg = LoraConfig(
-        r=args.rank,
-        lora_alpha=2 * args.rank,
-        lora_dropout=0.05,
-        task_type="CAUSAL_LM",
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
-    )
-    init_path = args.init_adapter
-    if init_path and os.path.isdir(init_path) and os.path.exists(os.path.join(init_path, "adapter_config.json")):
-        log(f"continuing LoRA from {init_path}")
-        pm = PeftModel.from_pretrained(model, init_path, is_trainable=True)
+        raise ValueError(f"At least {args.min_examples} reviewed examples are required; this file contains {len(examples)}.")
+    from peft import LoraConfig, get_peft_model
+    from transformers import AutoTokenizer
+    foundation = state["foundation"] if state else {"kind": "base", "base_model": args.model}
+    model_digest = local_model_hash(args.model) if not state else None
+    if model_digest:
+        foundation["base_sha256"] = model_digest
+    model = load_foundation(args.model, torch.float32, foundation)
+    if getattr(model.config, "_commit_hash", None):
+        foundation["revision"] = model.config._commit_hash
+    tokenizer = AutoTokenizer.from_pretrained(args.model, revision=foundation.get("revision"))
+    pad = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id
+    if not state:
+        for item in examples:
+            item["enc"] = encode(tokenizer, item["messages"], item["response"], args.max_prompt_tokens, args.max_response_tokens)
+    if state:
+        model = load_adapter(model, args.resume, trainable=True)
+    elif args.init_adapter:
+        if not os.path.isfile(os.path.join(args.init_adapter, "adapter_config.json")):
+            raise FileNotFoundError("The requested initial adapter has no configuration; choose an existing adapter or remove --init-adapter.")
+        model = load_adapter(model, args.init_adapter, trainable=True)
     else:
-        if init_path:
-            log(f"init adapter missing at {init_path}, training fresh LoRA")
-        pm = get_peft_model(model, cfg)
-    params = [p for p in pm.parameters() if p.requires_grad]
-    for p in params:
-        p.data = p.data.float()
-    opt = torch.optim.AdamW(params, lr=args.lr, weight_decay=0.01)
-    total = args.epochs * math.ceil(len(examples) / args.accum)
-    warm = max(1, int(0.1 * total))
-    sched = torch.optim.lr_scheduler.LambdaLR(
-        opt, lambda s: min(1.0, (s + 1) / warm) * 0.5 * (1 + math.cos(math.pi * min(1.0, s / max(1, total))))
-    )
+        config = LoraConfig(r=args.rank, lora_alpha=2 * args.rank, lora_dropout=0.05,
+                            task_type="CAUSAL_LM", target_modules=TARGET_MODULES)
+        model = get_peft_model(model, config)
+    parameters, optimizer, scheduler, total = make_optimizer(model, args, len(examples))
+    journal = TrainingJournal("narration", args.checkpoint_dir or args.out + "-checkpoints", vars(args).copy(), examples, state)
+    journal.state["foundation"] = foundation
 
-    pm.train()
-    step = 0
-    epoch_means: list[float] = []
-    for ep in range(args.epochs):
-        order = list(range(len(examples)))
-        random.shuffle(order)
-        losses = []
-        for j, idx in enumerate(order):
-            e = examples[idx]
-            with torch.autocast("cpu", dtype=torch.bfloat16):
-                _, nll = seq_logps(pm, [e["enc"]], pad)
-                loss = nll[0]
-            if not torch.isfinite(loss):
-                opt.zero_grad(set_to_none=True)
-                continue
-            (loss / args.accum).backward()
-            losses.append(float(loss.detach()))
-            if (j + 1) % args.accum == 0 or j == len(order) - 1:
-                grad_norm = torch.nn.utils.clip_grad_norm_(params, 1.0)
-                if not torch.isfinite(grad_norm):
-                    opt.zero_grad(set_to_none=True)
-                    continue
-                opt.step()
-                sched.step()
-                opt.zero_grad(set_to_none=True)
-                step += 1
-            if time.time() - t0 > args.max_minutes * 60:
-                log(f"stopped at time budget {args.max_minutes} min")
-                break
-        ep_mean = sum(losses) / max(1, len(losses))
-        epoch_means.append(ep_mean)
-        log(f"epoch {ep + 1}/{args.epochs} mean_nll={ep_mean:.3f} ({time.time() - t0:.0f}s)")
+    def loss_fn(item):
+        _, losses = seq_logps(model, [item["enc"]], pad)
+        loss = losses[0]
+        return loss, {"sft": float(loss.detach())}, sum(len(tokens) for tokens in item["enc"])
 
-    nan_params = sum(int(torch.isnan(p).sum()) for p in params)
-    if nan_params:
-        log(f"refusing to save: {nan_params} NaN LoRA parameters")
-        return {"status": "failed", "reason": "nan weights", "nan_params": nan_params, "epoch_nll_means": [round(x, 4) for x in epoch_means]}
+    if not journal.train(model, parameters, optimizer, scheduler, total, args, loss_fn, stop_event):
+        return {"status": "paused", "reason": "Narration training paused safely; resume its checkpoint to continue.",
+                "checkpoint": journal.checkpoint, "step": journal.state["step"], "total_steps": total, "out": args.out}
+    model.eval()
+    losses = []
+    with torch.inference_mode():
+        for item in examples[:64]:
+            _, loss = seq_logps(model, [item["enc"]], pad)
+            value = float(loss[0])
+            if not math.isfinite(value):
+                raise FloatingPointError("Narration evaluation produced non-finite loss; existing weights were preserved.")
+            losses.append(value)
+    if stop_event.is_set():
+        return {"status": "paused", "reason": "Narration training is checkpointed and ready to finish on resume.",
+                "checkpoint": journal.checkpoint, "step": journal.state["step"], "total_steps": total, "out": args.out}
+    staging = args.out + ".tmp-" + str(time.time_ns())
+    model.save_pretrained(staging, safe_serialization=True)
+    rank = next(iter(model.peft_config.values())).r
+    metadata = {"kind": "narration", "created": time.time(), "base_model": args.model, "data": args.data,
+                "init_adapter": args.init_adapter, "examples": len(examples), "epochs": args.epochs, "rank": rank,
+                "lr": args.lr, "train_minutes": round(journal.state["elapsed_s"] / 60, 2),
+                "train_nll_mean": round(sum(losses) / len(losses), 4),
+                "epoch_nll_means": [round(value, 4) for value in journal.state["epoch_means"]],
+                "optimizer_steps": journal.state["step"], "checkpoint": journal.checkpoint,
+                "dataset_sha256": fingerprint(examples), "foundation": foundation,
+                "config": vars(args).copy(), "software": software_versions()}
+    manifest = os.path.join(os.path.dirname(args.data), "manifest.json")
+    if os.path.isfile(manifest):
+        with open(manifest, encoding="utf-8") as source:
+            metadata["corpus_manifest"] = json.load(source)
+    atomic_json(os.path.join(staging, "meta.json"), metadata)
+    if os.path.exists(args.out):
+        backup = args.out + ".previous-" + str(time.time_ns())
+        os.rename(args.out, backup)
+        try:
+            os.rename(staging, args.out)
+        except Exception:
+            os.rename(backup, args.out)
+            raise
+        log(f"Previous narration weights are preserved at {backup}.")
+    else:
+        os.rename(staging, args.out)
+    log(f"Saved narration adapter to {args.out}; mean NLL {metadata['train_nll_mean']}.")
+    return {"status": "ok", "out": args.out, **metadata}
 
-    pm.eval()
-    with torch.inference_mode(), torch.autocast("cpu", dtype=torch.bfloat16):
-        after = []
-        for e in examples[:64]:
-            _, nll = seq_logps(pm, [e["enc"]], pad)
-            val = float(nll[0])
-            if math.isfinite(val):
-                after.append(val)
 
-    os.makedirs(args.out, exist_ok=True)
-    pm.save_pretrained(args.out)
-    meta = {
-        "kind": "narration",
-        "created": time.time(),
-        "base_model": args.model,
-        "data": os.path.abspath(args.data),
-        "init_adapter": os.path.abspath(init_path) if init_path else None,
-        "examples": len(examples),
-        "epochs": args.epochs,
-        "rank": args.rank,
-        "lr": args.lr,
-        "train_minutes": round((time.time() - t0) / 60, 2),
-        "train_nll_mean": round(sum(after) / len(after), 4) if after and all(math.isfinite(x) for x in after) else (round(epoch_means[-1], 4) if epoch_means else None),
-        "epoch_nll_means": [round(x, 4) for x in epoch_means],
-        "max_rss_gb": round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 2),
-    }
-    if os.path.exists(os.path.join(os.path.dirname(args.data), "manifest.json")):
-        with open(os.path.join(os.path.dirname(args.data), "manifest.json"), encoding="utf-8") as mf:
-            meta["corpus_manifest"] = json.load(mf)
-    with open(os.path.join(args.out, "meta.json"), "w", encoding="utf-8") as f:
-        json.dump(meta, f, ensure_ascii=False, indent=1)
-    log(f"saved narration adapter -> {args.out} ({meta['train_minutes']} min, RSS ~{meta['max_rss_gb']} GB)")
-    return {"status": "ok", "out": args.out, **meta}
+def run(args, stop_event: threading.Event | None = None) -> dict:
+    state = read_checkpoint(args.resume, "narration") if args.resume else None
+    if state:
+        restore_args(args, state)
+    with training_lock(args.out + ".training.lock"):
+        return _run(args, stop_event or threading.Event(), state)
 
 
 def parser():
-    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--data", default=os.path.join(here, "data", "rp-narration", "train.jsonl"))
-    ap.add_argument(
-        "--init-adapter",
-        default=None,
-        help="Continue training an existing narration LoRA (e.g. rp/bundled_adapters/narration)",
-    )
-    ap.add_argument("--out", default=os.path.join(here, "rp", "bundled_adapters", "narration"))
-    ap.add_argument("--model", default=os.environ.get("RP_MODEL", DEFAULT_MODEL))
-    ap.add_argument("--epochs", type=int, default=6)
-    ap.add_argument("--lr", type=float, default=3e-4)
-    ap.add_argument("--rank", type=int, default=8)
-    ap.add_argument("--accum", type=int, default=1)
-    ap.add_argument("--max-prompt-tokens", type=int, default=768)
-    ap.add_argument("--max-response-tokens", type=int, default=320)
-    ap.add_argument("--max-minutes", type=float, default=120)
-    ap.add_argument("--min-examples", type=int, default=8)
-    ap.add_argument("--threads", type=int, default=None)
-    ap.add_argument("--seed", type=int, default=0)
-    return ap
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    arguments = argparse.ArgumentParser(description=__doc__)
+    arguments.add_argument("--data", default=os.path.join(root, "data", "rp-narration", "train.jsonl"))
+    arguments.add_argument("--init-adapter", default=None)
+    arguments.add_argument("--out", default=os.path.join(root, "rp", "bundled_adapters", "narration"))
+    arguments.add_argument("--model", default=os.environ.get("RP_MODEL", DEFAULT_MODEL))
+    arguments.add_argument("--epochs", type=int, default=6)
+    arguments.add_argument("--lr", type=float, default=3e-4)
+    arguments.add_argument("--rank", type=int, default=8)
+    arguments.add_argument("--accum", type=int, default=1)
+    arguments.add_argument("--max-prompt-tokens", type=int, default=768)
+    arguments.add_argument("--max-response-tokens", type=int, default=320)
+    arguments.add_argument("--max-minutes", type=float, default=120)
+    arguments.add_argument("--min-examples", type=int, default=8)
+    arguments.add_argument("--threads", type=int, default=None)
+    arguments.add_argument("--seed", type=int, default=0)
+    arguments.add_argument("--checkpoint-every", type=int, default=10)
+    arguments.add_argument("--checkpoint-dir", default=None)
+    arguments.add_argument("--resume", default=None)
+    return arguments
+
+
+def main() -> int:
+    stopped = threading.Event()
+    signal.signal(signal.SIGTERM, lambda *_: stopped.set())
+    signal.signal(signal.SIGINT, lambda *_: stopped.set())
+    try:
+        result = run(parser().parse_args(), stopped)
+    except Exception as error:
+        log(f"Training stopped: {error}")
+        result = {"status": "failed", "reason": str(error)}
+    print("RESULT " + json.dumps(result, ensure_ascii=False), flush=True)
+    return 0 if result["status"] in {"ok", "paused"} else 1
 
 
 if __name__ == "__main__":
-    res = run(parser().parse_args())
-    print("RESULT " + json.dumps(res, ensure_ascii=False), flush=True)
-    sys.exit(0 if res.get("status") == "ok" else 1)
+    sys.exit(main())

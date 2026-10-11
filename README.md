@@ -1,4 +1,147 @@
-# SLM: a baby-inspired small language model you can train on a laptop CPU
+# SLM · Roleplay Studio
+
+A CPU-friendly Chinese roleplay assistant that learns from your corrections, preferred replies and swipe choices. Chat in the web UI or SillyTavern, review what the model should learn, then run short, resumable LoRA training batches.
+
+| Task | Where to do it |
+|---|---|
+| Chat during a lecture break | **对话 / Chat**: start the model service, add a character and send a message |
+| Teach a better reply | **Chat**: like a reply, edit it, or choose a regenerated alternative |
+| Keep the session quiet | **设置 / Settings**: choose **只收集反馈 / Collect only** |
+| Learn when you are idle | **Settings**: choose **空闲时学习 / Idle** |
+| Learn while continuing to chat | **Settings**: choose **后台短时学习 / Background**, allowing for slower CPU replies |
+| Inspect training | **训练 / Training**: real loss, step, learning rate, elapsed time, checkpoints and saved logs |
+| Remove bad examples | **学习记录 / Review**: exclude or restore a feedback record |
+| Resume or roll back | **Training**: resume a complete checkpoint; **模型 / Models**: choose an older version or the base |
+| Save the result | **Models**: export the adapter; **Review**: export the feedback dataset |
+
+Learning happens in training batches. A single correction can be memorized without improving unfamiliar scenes. Keep reviewing examples and comparing held-out prompts. Negative feedback alone does not teach a replacement reply.
+
+## Start locally
+
+Use **Python 3.12**. The default model is `Qwen/Qwen2.5-0.5B-Instruct`. First model startup downloads its pretrained weights; allow persistent storage and enough RAM for both inference and training. For a cloud CPU instance, start with **8 GB RAM**, **4 CPU cores** and **10 GB free disk**; simultaneous inference/training needs more memory and disk grows with retained checkpoints. These are planning allowances, not a guarantee for every model or prompt length.
+
+```bash
+git clone https://github.com/How1Come/SLM.git
+cd SLM
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m rp.ui
+```
+
+Open [http://127.0.0.1:8847](http://127.0.0.1:8847). Click **启动对话服务 / Start chat service** and wait for **已就绪 / Ready**. Set a character or scene, then chat. The training UI stays usable while the model loads.
+
+The dependency file pins direct runtime versions. Linux CPU uses PyTorch **2.6.0**; Intel macOS uses **2.2.2** because newer PyTorch wheels are unavailable for that architecture. Tiny-model tests exercise real training, adapter reload and exact pause/resume behavior without downloading an LLM.
+
+## Learn during spare time
+
+1. Choose **Collect only** during class to retain feedback without automatic training.
+2. Like useful replies or write a stronger correction. Rejection flags identify problems; corrections provide the behavior to imitate.
+3. Open **Review** and exclude mistaken feedback. Legacy feedback created before session isolation is retained for review and starts excluded.
+4. Choose **Idle** for automatic short batches after enough fresh feedback and a pause in chatting, or click **现在学习 / Learn now**.
+5. Watch **Training**. A time limit pauses at a safe optimizer boundary and saves a checkpoint. Automatic learning continues that checkpoint on its next eligible pass; **Resume** also continues it manually.
+6. Compare new conversations with fixed prompts. Choose **base**, **narration** or an older chat adapter if the latest version is worse.
+
+Default automatic learning waits for **10 fresh signals** and **300 seconds idle**, uses **1 training thread**, trains for **2 epochs** and allows **5 minutes per batch**. Settings persist under the selected data directory. **Background** mode can consume CPU while you chat; **Idle** is the better starting choice on small machines.
+
+Turning off automatic learning in the UI keeps feedback collection enabled. If you edit or exclude a training example while a batch is running, that batch's adapter is saved for inspection but cannot activate automatically; the updated feedback remains pending for a new batch.
+
+Read the [beginner guide](docs/chat-learning.md) for cloud access, feedback interpretation, checkpoints, export, troubleshooting and API examples.
+
+## Run on a cloud CPU instance
+
+The UI listens on loopback by default. For remote access, generate an access token, expose only the authenticated UI behind HTTPS, and keep the model worker private.
+
+```bash
+cp .env.example .env
+python -c 'import secrets; print(secrets.token_urlsafe(32))'
+```
+
+Paste the generated value into `RP_AUTH_TOKEN` in `.env`. Set `RP_HOST=0.0.0.0` only when using a firewall and TLS reverse proxy. Set `RP_SECURE_COOKIE=1` for HTTPS browser access. Start using the launcher:
+
+```bash
+source .venv/bin/activate
+sh scripts/launch-rp.sh
+```
+
+The UI-managed model worker listens on **127.0.0.1:8627**. The trainer UI listens on **8847**. A standalone `python -m rp.server` uses **8619**; use its port only for a deliberately separate server. Do not expose model, training-control or log endpoints unauthenticated.
+
+For private access without a public endpoint, leave the UI on loopback and use an SSH tunnel:
+
+```bash
+ssh -L 8847:127.0.0.1:8847 your-user@your-server
+```
+
+Open `http://127.0.0.1:8847` on your own computer. Remote browser cookies require `RP_SECURE_COOKIE=0` for this HTTP tunnel.
+
+## Run with Docker
+
+The CPU image runs as UID **10001**, serves the UI with Waitress, requires an access token, and stores runtime files in a persistent volume. Docker publishes only the UI, bound to loopback on the host. Start it behind an SSH tunnel or a TLS reverse proxy.
+
+```bash
+cp .env.example .env
+python -c 'import secrets; print(secrets.token_urlsafe(32))'
+docker compose up --build -d
+docker compose logs -f
+```
+
+Set the generated token in `.env` before `docker compose up`. Use the UI to stop active training and wait for a completed checkpoint before restarting the container:
+
+```bash
+docker compose down
+docker compose up -d
+```
+
+`docker compose down` retains the named data volume. Removing that volume deletes chat feedback, adapters, checkpoints, job history and model cache. Back it up before moving or replacing the server. The image is designed for a single-user, single-controller service; it does not require a GPU or the NVIDIA runtime.
+
+## Connect SillyTavern
+
+| Setting | Value |
+|---|---|
+| API | Chat Completion |
+| Source | Custom / OpenAI-compatible |
+| Endpoint | Your trainer UI origin followed by `/v1`, such as `http://127.0.0.1:8847/v1` |
+| Model | `qwen2.5-0.5b-rp` |
+| API key | `RP_AUTH_TOKEN` when access is protected |
+| Character | Your card, or [苏小糖](rp/characters/su_xiaotang.json) |
+
+Send a distinct conversation identifier with each chat where the client supports `session_id`, `metadata.conversation_id`, `user` or `X-RP-Session`. The built-in UI supplies one automatically. Without one, the server falls back to the system prompt identity; independent chats using the same card cannot be reliably distinguished.
+
+SillyTavern edits and kept swipe alternatives become feedback when its updated history reaches the server. `!good`, `!bad`, `!fix <better reply>`, `!sleep` and `!status` provide explicit hooks. See the [feedback guide](docs/chat-learning.md#teach-from-chat) before starting automatic learning.
+
+## Repository layout
+
+| Path | Purpose |
+|---|---|
+| `rp/ui/` | Web interface, persistent job journal, subprocess orchestration |
+| `rp/server.py` | OpenAI-compatible model API and automatic training scheduler |
+| `rp/learn.py`, `rp/store.py` | Scoped feedback detection, SQLite persistence and review |
+| `rp/settings.py` | Atomic learning settings |
+| `rp/engine.py` | CPU inference, pristine base selection and adapter loading |
+| `rp/sleep.py` | Chat LoRA training, safety checks and checkpoint/resume |
+| `rp/train_narration.py` | Supervised narration training |
+| `data/rp-narration/` | Project-authored Chinese training examples and held-out prompts |
+| `rp/bundled_adapters/narration/` | Bundled narration adapter |
+| `tests/` | Offline tiny-model, feedback, persistence and API regression tests |
+| `slm/` | Separate from-scratch English Cradle experiment |
+
+The current release repairs and extends the CPU roleplay workflow. GPU QLoRA, arbitrary dataset/project management, external AI generation and multi-worker orchestration remain future modules. Adapters are exported for the matching Transformers/PEFT base; GGUF and other conversions are unavailable.
+
+## Verify the installation
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pip check
+python -m pytest tests -q
+node --check rp/ui/static/app.js
+sh -n scripts/launch-rp.sh
+```
+
+Node is needed only for the JavaScript syntax check. It is not needed to serve the application.
+
+For a focused training smoke test with real tiny-model optimizer steps, run `python -m pytest tests/test_sleep.py tests/test_adapters.py -q`.
+
+## Historical Cradle experiment
 
 This repo trains a ~3.4M-parameter language model from scratch on about 2.3M words of child-directed
 speech and children's stories, in roughly 13 minutes on a 4-core CPU. Training follows **Cradle**, a recipe
@@ -15,45 +158,26 @@ so the two can be compared directly.
 The design rationale, the literature behind it, and measured results are in
 [`docs/slm-design.md`](docs/slm-design.md). A short version of the results is at the bottom of this file.
 
-## Quickstart
+## Run the Cradle experiment
+
+Use the Python environment from the installation above. This downloads the public corpora and trains the separate English tiny model:
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install numpy tokenizers            # + transformers, only if you want the --judge metric
-
-python -m slm.data                       # downloads ~22 MB (AO-CHILDES, TinyStories-valid, Zorro), trains a BPE tokenizer
-python -m slm.train --recipe cradle --no-babble --no-sleep --name listen   # recommended "listen-only" Cradle, ~13 min
-python -m slm.train --recipe cradle --name cradle        # full 4 phases incl. the babble/feedback loop
-python -m slm.train --recipe baseline --name baseline    # same compute, plain shuffled next-token training
-python -m slm.evaluate runs/listen/model.pt runs/cradle/model.pt runs/baseline/model.pt [--judge]
-python -m slm.chat --checkpoint runs/listen/model.pt      # interactive; or add --prompt "once upon a time" -n 3
+python -m slm.data
+python -m slm.train --recipe cradle --no-babble --no-sleep --name listen
+python -m slm.train --recipe cradle --name cradle
+python -m slm.train --recipe baseline --name baseline
+python -m slm.evaluate runs/listen/model.pt runs/cradle/model.pt runs/baseline/model.pt
+python -m slm.chat --checkpoint runs/listen/model.pt
 ```
 
-For a quick smoke test, add `--budget-tokens 1e6` to the train commands (about 1 minute each).
-
-To reproduce the whole comparison (baseline, the Cradle variants, and the ablations, about 14 minutes per run, then a Markdown table in `runs/report.md`):
+For a smoke test, add `--budget-tokens 1e6` to training commands. The experiment's recommended recipe remains **listen-only**. The full comparison runs with:
 
 ```bash
-scripts/run_experiments.sh 12e6 0        # budget (trained-token equivalents), seed
+sh scripts/run_experiments.sh 12e6 0
 ```
 
-Ablation flags for `slm.train --recipe cradle`: `--no-curriculum`, `--no-prior`, `--no-babble`, `--no-sleep`.
-Variant flags: `--babble-mode best-of-k`, `--cds-mix 0.07` (keep the child-directed-speech share equal to the
-baseline's), `--phases LISTEN_CDS LISTEN_STORIES BABBLE SLEEP` (budget fractions).
-
-## Role-play narration LoRA (`rp/`)
-
-Teach Qwen2.5-0.5B-Instruct Chinese scene narration with two or more named speakers (CPU LoRA, data licensed in
-`data/rp-narration/SOURCES.md`):
-
-```bash
-pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install transformers peft
-python data/rp-narration/build_train.py
-python -m rp.train_narration
-python -m rp.server    # loads narration adapter by default until a chat sleep vN is active
-```
+Ablation flags for `slm.train --recipe cradle`: `--no-curriculum`, `--no-prior`, `--no-babble`, `--no-sleep`. Variant flags: `--babble-mode best-of-k`, `--cds-mix 0.07`, `--phases LISTEN_CDS LISTEN_STORIES BABBLE SLEEP`.
 
 ## Data (all public, no credentials)
 
@@ -110,23 +234,12 @@ The full analysis, ablations, learning curves, and next experiments are in
 [`docs/slm-design.md`](docs/slm-design.md). Every
 run's raw numbers are in `runs/results.json` and `runs/report.md`.
 
-## Cradle trainer UI
+## Open the Cradle trainer
 
-One-page web UI for the presets above (listen-only, full Cradle, baseline, smoke test), live log/progress, stop, perplexity + sample when a run finishes, and prompt continuation without a terminal:
-
-```bash
-source .venv/bin/activate   # after the Quickstart venv setup
-python -m slm.ui            # http://127.0.0.1:8765/
-```
-
-## Role-play trainer UI
-
-One-page UI for narration LoRA training (`python -m rp.train_narration`), chat sleep (`python -m rp.sleep`), starting the SillyTavern-compatible server, and a quick held-out eval (`python -m rp.narration_eval`) without retraining:
+The separate Cradle UI offers its experiment presets, logs and prompt continuation:
 
 ```bash
-source .venv/bin/activate
-pip install transformers peft fastapi uvicorn httpx   # rp server + training
-python -m rp.ui            # http://127.0.0.1:8847/
+python -m slm.ui
 ```
 
-The UI starts `rp.server` on port **8627** by default (SillyTavern endpoint `http://127.0.0.1:8627/v1`, model id `qwen2.5-0.5b-rp`). Use `--rp-port` if that port is taken.
+Open [http://127.0.0.1:8765](http://127.0.0.1:8765). This UI trains the English tiny model. Use **Roleplay Studio** for Chinese roleplay feedback learning.

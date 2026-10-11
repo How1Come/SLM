@@ -12,7 +12,8 @@ import resource
 import time
 
 from . import DEFAULT_DATA_DIR, DEFAULT_MODEL
-from .engine import Engine
+from .engine import Engine, list_adapters
+from .sleep import software_versions
 
 HERE = os.path.dirname(__file__)
 DIALOGUE = re.compile(r"[「『\"]([^」』\"]{2,})[」』\"]")
@@ -43,12 +44,18 @@ def main():
     ap.add_argument("--threads", type=int, default=None)
     ap.add_argument("--out", default="runs/rp-narration/eval")
     a = ap.parse_args()
+    if a.samples < 1 or a.max_tokens < 1:
+        ap.error("samples and max-tokens must be positive")
 
     held = json.load(open(a.heldout, encoding="utf-8"))
-    eng = Engine(a.model, a.data_dir, threads=a.threads)
-    results = {"heldout": a.heldout, "versions": {}, "created": time.ctime()}
+    eng = Engine(a.model, a.data_dir, threads=a.threads, initial_version="base")
+    adapters = {item["version"]: item for item in list_adapters(a.data_dir)}
+    results = {"heldout": a.heldout, "versions": {}, "created": time.ctime(), "base_model": a.model,
+               "software": software_versions(), "evaluation_kind": "automatic_heuristics",
+               "seeds": [42 + index for index in range(a.samples)], "max_tokens": a.max_tokens}
     for v in a.versions:
-        eng.activate(v)
+        if eng.version != v:
+            eng.activate(v)
         rows = []
         for p in held["prompts"]:
             msgs = [{"role": "system", "content": p["system"]}, {"role": "user", "content": p["user"]}]
@@ -60,6 +67,7 @@ def main():
             print(f"[{v}] {p['user'][:40]}… | {samples[0]['text'][:100]!r}", flush=True)
         alls = [s for r in rows for s in r["samples"]]
         agg = {
+            "active_adapter": eng.version, "foundation": adapters.get(v, {}).get("foundation", {"kind": v}),
             "multi_char_rate": round(sum(s["multi_char_dialogue"] for s in alls) / len(alls), 3),
             "avg_named_chars": round(sum(s["named_chars"] for s in alls) / len(alls), 2),
             "avg_dialogue_lines": round(sum(s["dialogue_lines"] for s in alls) / len(alls), 2),
